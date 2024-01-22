@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Dragon Century</string>
+    <string name="str_name_user">Nombre de Usuario</string>
+    <string name="str_password">Contraseña</string>
+    <string name="str_login">Iniciar sesión</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
+</resources>
