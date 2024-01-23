@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.widget.Toast
 import org.json.JSONException
 import org.json.JSONObject
@@ -67,7 +66,8 @@ class LoginActivity : AppCompatActivity() {
                 }
             },
             Response.ErrorListener { error ->
-                Toast.makeText(this, "Error en la petición: ${error.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error en la petición: ${error.message}", Toast.LENGTH_SHORT)
+                    .show()
             }) {
             override fun getParams(): Map<String, String> {
                 val params = HashMap<String, String>()
@@ -78,7 +78,6 @@ class LoginActivity : AppCompatActivity() {
         }
         queue.add(stringRequest)
     }
-
 }
 
 
