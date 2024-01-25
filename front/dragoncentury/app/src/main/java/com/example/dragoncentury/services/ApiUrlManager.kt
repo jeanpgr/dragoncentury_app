@@ -7,7 +7,7 @@ class ApiUrlManager {
             ApiUrlManager()
         }
 
-        private const val SERVER_NAME = "192.168.1.26"
+        private const val SERVER_NAME = "172.16.2.141"
 
         private const val URL_LOGIN = "http://$SERVER_NAME/sv_dragoncentury/login.php"
         private const val URL_GET_COCHES = "http://$SERVER_NAME/sv_dragoncentury/getCoches.php"

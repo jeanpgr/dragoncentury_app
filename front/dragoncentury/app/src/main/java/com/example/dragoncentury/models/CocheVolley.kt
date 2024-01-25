@@ -7,6 +7,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.dragoncentury.services.ApiUrlManager
+import android.util.Base64
 import org.json.JSONArray
 import org.json.JSONException
 
@@ -41,7 +42,7 @@ class CocheVolley {
                 for (i in 0 until jsonArray.length()) {
                     val jsonObject = jsonArray.getJSONObject(i)
                     val idCoche = jsonObject.getInt("id_coche")
-                    val imgCoche = jsonObject.getString("img_coche")
+                    //val imgCoche = jsonObject.getString("img_coche")
                     val nombCoche = jsonObject.getString("nomb_coche")
                     val colorCoche = jsonObject.getString("color_coche")
                     val numCharges = jsonObject.getInt("num_charges")
@@ -49,7 +50,10 @@ class CocheVolley {
                     val totalVueltas = jsonObject.getInt("total_vueltas")
                     val condCoche = jsonObject.getString("condic_coche")
 
-                    val coche = CocheModel(idCoche, imgCoche, nombCoche, colorCoche, numCharges, numChangeBattery, totalVueltas, condCoche)
+                    val imgCocheBase64 = jsonObject.getString("img_coche")
+                    val imgBytes = Base64.decode(imgCocheBase64, Base64.DEFAULT)
+
+                    val coche = CocheModel(idCoche, imgBytes, nombCoche, colorCoche, numCharges, numChangeBattery, totalVueltas, condCoche)
                     coches.add(coche)
                 }
             } catch (e: JSONException) {

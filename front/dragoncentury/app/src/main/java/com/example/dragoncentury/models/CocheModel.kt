@@ -2,7 +2,7 @@ package com.example.dragoncentury.models
 
 data class CocheModel(
     val idCoche: Int,
-    val imgCoche: String,
+    val imgCoche: ByteArray,
     val nameCoche: String,
     val colorCoche: String,
     val numCargasCoche: Int,

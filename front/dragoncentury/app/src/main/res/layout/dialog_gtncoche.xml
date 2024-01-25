@@ -1,10 +1,10 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="370dp"
     android:layout_height="360dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/color_8vo"
-    app:cardCornerRadius="10dp"
+    app:cardCornerRadius="15dp"
     android:layout_marginHorizontal="20dp">
 
     <LinearLayout
@@ -29,18 +29,44 @@
             android:textStyle="bold"
             android:textColor="@color/color_6to"/>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Color:"
+                android:layout_marginStart="25sp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/color_6to"/>
 
             <TextView
                 android:id="@+id/txtDialogColorCoche"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Color Coche"
-                android:layout_marginStart="10sp"
+                android:layout_marginStart="5sp"
                 android:textSize="20sp"
+                android:textColor="@color/color_6to"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Vueltas:"
+                android:layout_below="@+id/txtDialogColorCoche"
+                android:layout_marginStart="25sp"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 android:textColor="@color/color_6to"/>
 
             <TextView
@@ -49,11 +75,12 @@
                 android:layout_height="wrap_content"
                 android:text="Num Vueltas"
                 android:layout_below="@+id/txtDialogColorCoche"
-                android:layout_marginStart="10sp"
+                android:layout_marginStart="2sp"
                 android:textSize="20sp"
                 android:textColor="@color/color_6to"/>
 
-        </RelativeLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -61,12 +88,21 @@
             android:orientation="horizontal">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cargas:"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginStart="25sp"
+                android:textColor="@color/color_6to"/>
+
+            <TextView
                 android:id="@+id/txtDialogNumCargas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Num Cargas"
                 android:textSize="20sp"
-                android:layout_marginStart="10sp"
+                android:layout_marginStart="5sp"
                 android:textColor="@color/color_6to"/>
 
             <ImageView
@@ -86,12 +122,21 @@
             android:orientation="horizontal">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cambios Bateria:"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginStart="25sp"
+                android:textColor="@color/color_6to"/>
+
+            <TextView
                 android:id="@+id/txtDialogNumCambBat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Num Cambios Bateria"
+                android:text="Num"
                 android:textSize="20sp"
-                android:layout_marginStart="10sp"
+                android:layout_marginStart="5sp"
                 android:textColor="@color/color_6to"/>
 
             <ImageView
@@ -111,12 +156,21 @@
             android:orientation="horizontal">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Condición:"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginStart="25sp"
+                android:textColor="@color/color_6to"/>
+
+            <TextView
                 android:id="@+id/txtDialogCondCoche"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Num Cambios Bateria"
+                android:text="Condición"
                 android:textSize="20sp"
-                android:layout_marginStart="10sp"
+                android:layout_marginStart="5sp"
                 android:textColor="@color/color_6to"/>
 
             <ImageView
