@@ -6,7 +6,7 @@
     <color name="teal_200">#1e1d38</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#1e1d38</color>
-    <color name="white">#80c8d2d3</color>
+    <color name="white">#fff</color>
 
     <color name="color_8vo">#fffbdf</color>
     <color name="color_bckground">#80c8d2d3</color>
@@ -15,6 +15,6 @@
     <color name="color_1ro">#ffd02c</color>
     <color name="color_3ro">#e5261d</color>
     <color name="color_4to">#ad191c</color>
-    <color name="color_eftbtn">#80ad191c</color>
+    <color name="color_efecto_btn">#80ad191c</color>
 
 </resources>

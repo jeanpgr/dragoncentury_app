@@ -1,18 +1,17 @@
-package com.example.dragoncentury
+package com.example.dragoncentury.views
 
-import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
-import org.json.JSONException
-import org.json.JSONObject
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.dragoncentury.databinding.ActivityLoginBinding
 import com.example.dragoncentury.services.ApiUrlManager
+import org.json.JSONException
+import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
 
@@ -24,38 +23,38 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnLogIn.setOnClickListener{
-            val nick_user = binding.editTxtUserName.text.toString()
-            val passw_user = binding.editTxtPassword.text.toString()
-            if (TextUtils.isEmpty(nick_user)) {
+            val nickUser = binding.editTxtUserName.text.toString()
+            val passUser = binding.editTxtPassword.text.toString()
+            if (TextUtils.isEmpty(nickUser)) {
                 binding.editTxtUserName.error = "Ingrese su Nombre de Usuario"
                 return@setOnClickListener
             }
-            if (TextUtils.isEmpty(passw_user)) {
+            if (TextUtils.isEmpty(passUser)) {
                 binding.editTxtPassword.error = "Ingrese su Contraseña"
                 return@setOnClickListener
             }
-            logear(nick_user, passw_user)
+            logear(nickUser, passUser)
         }
     }
 
 
-    private fun logear(nick_user: String, passw_user: String) {
+    private fun logear(nickUser: String, passwUser: String) {
 
         val url = apiServices.getUrlLogin()
 
         val queue = Volley.newRequestQueue(this)
         val stringRequest = object : StringRequest(Method.POST, url,
-            Response.Listener<String> { response ->
+            Response.Listener { response ->
                 try {
                     val jsonObject = JSONObject(response)
                     if (jsonObject.length() > 0) {
-                        val id_user = jsonObject.getString("id_user")
+                        val idUser = jsonObject.getString("id_user")
 
                         Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
                         // Procesa la respuesta del servidor
-                        val sharedPref = getSharedPreferences("login_data", Context.MODE_PRIVATE)
+                        val sharedPref = getSharedPreferences("login_data", MODE_PRIVATE)
                         val editor = sharedPref.edit()
-                        editor.putString("id_user", id_user)
+                        editor.putString("id_user", idUser)
                         editor.apply()
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
@@ -71,23 +70,11 @@ class LoginActivity : AppCompatActivity() {
             }) {
             override fun getParams(): Map<String, String> {
                 val params = HashMap<String, String>()
-                params["nick_user"] = nick_user
-                params["passw_user"] = passw_user
+                params["nick_user"] = nickUser
+                params["passw_user"] = passwUser
                 return params
             }
         }
         queue.add(stringRequest)
     }
 }
-
-
-/*
-#ffd02c
-#f18413
-#e5261d
-#ad191c
-#eb5c73
-#1e1d38
-#c8d2d3
-#fffbdf
- */

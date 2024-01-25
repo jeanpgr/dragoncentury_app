@@ -6,22 +6,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="150sp"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="10dp"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="20dp"
     android:layout_margin="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_8vo">
+        android:background="@color/color_3ro">
 
         <ImageView
             android:id="@+id/imgViewCoche"
-            android:layout_width="87dp"
-            android:layout_height="87dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="28dp"
-            android:layout_marginBottom="30dp"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -31,10 +31,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:text="TextView"
-            android:textColor="@color/color_6to"
-            android:textSize="18sp"
+            android:textColor="@color/color_1ro"
+            android:textSize="28sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
             app:layout_constraintTop_toTopOf="parent" />
@@ -44,10 +44,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="7dp"
             android:text="TextView"
             android:textColor="@color/color_6to"
-            android:textSize="16sp"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
             app:layout_constraintTop_toBottomOf="@+id/txtNameCoche" />
 
@@ -56,39 +57,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="4dp"
             android:text="TextView"
             android:textColor="@color/color_6to"
-            android:textSize="16sp"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
             app:layout_constraintTop_toBottomOf="@+id/txtColor" />
 
-
-        <TextView
-            android:id="@+id/txtNumCambBatt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="5dp"
-            android:text="TextView"
-            android:textColor="@color/color_6to"
-            android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
-            app:layout_constraintTop_toBottomOf="@+id/txtNumCargas" />
 
         <TextView
             android:id="@+id/txtCondicion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="14dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="16dp"
             android:text="TextView"
             android:textColor="@color/color_6to"
-            android:textSize="16sp"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
-            app:layout_constraintTop_toBottomOf="@+id/txtNumCambBatt" />
+            app:layout_constraintTop_toBottomOf="@+id/txtNumCargas" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

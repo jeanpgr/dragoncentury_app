@@ -7,10 +7,16 @@ class ApiUrlManager {
             ApiUrlManager()
         }
 
-        private const val URL_LOGIN = "http://172.16.2.145/sv_dragoncentury/login.php"
+        private const val SERVER_NAME = "192.168.1.26"
 
-        public fun getUrlLogin(): String {
+        private const val URL_LOGIN = "http://$SERVER_NAME/sv_dragoncentury/login.php"
+        private const val URL_GET_COCHES = "http://$SERVER_NAME/sv_dragoncentury/getCoches.php"
+        fun getUrlLogin(): String {
             return URL_LOGIN
+        }
+
+        fun getUrlGetCoches(): String {
+            return URL_GET_COCHES
         }
     }
 }

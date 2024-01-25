@@ -4,5 +4,9 @@
     <string name="str_password">Contraseña</string>
     <string name="str_login">Iniciar sesión</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="str_title_fragCastle">Gestionar Coches</string>
+    <string name="str_der_reserv">©2024 Dragon Century. Todos los derechos reservados.</string>
+    <!-- TODO: Remove or change this placeholder text -->
 
 </resources>
