@@ -5,13 +5,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.dragoncentury.databinding.ItemGtncochesBinding
 import com.example.dragoncentury.models.CocheModel
 import com.squareup.picasso.Picasso
-import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 class GtnCocheViewHolder(view:View) : RecyclerView.ViewHolder(view) {
 
     private val binding = ItemGtncochesBinding.bind(view)
+
+    // Carga data en el CardView
     fun render(cocheModel: CocheModel, onClickListener: (CocheModel) -> Unit) {
         loadImgCoche(cocheModel)
         binding.txtNameCoche.text = cocheModel.nameCoche

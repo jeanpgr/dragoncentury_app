@@ -29,7 +29,7 @@ class CocheVolley {
                     callback(cochesList)
                 },
                 { error ->
-                    Toast.makeText(context, "Error al cargar los viajes: ${error.message} " , Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Error de red: ${error.message} " , Toast.LENGTH_SHORT).show()
                 }
             )
             queue.add(stringRequest)
@@ -42,7 +42,6 @@ class CocheVolley {
                 for (i in 0 until jsonArray.length()) {
                     val jsonObject = jsonArray.getJSONObject(i)
                     val idCoche = jsonObject.getInt("id_coche")
-                    //val imgCoche = jsonObject.getString("img_coche")
                     val nombCoche = jsonObject.getString("nomb_coche")
                     val colorCoche = jsonObject.getString("color_coche")
                     val numCharges = jsonObject.getInt("num_charges")

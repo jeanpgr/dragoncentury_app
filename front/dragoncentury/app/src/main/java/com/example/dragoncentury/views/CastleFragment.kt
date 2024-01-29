@@ -1,6 +1,7 @@
 package com.example.dragoncentury.views
 
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -9,9 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -65,15 +69,19 @@ class CastleFragment : Fragment() {
         getListCoches(view)
     }
 
+    //Activa la seleccion del item pasando como parametro el coche seleccionado
     private fun onCocheSelected(coche: CocheModel) {
-        //Toast.makeText(requireContext(), coche.nameCoche, Toast.LENGTH_LONG).show()
         showDialogGtnCoches(coche)
     }
+
+    //Iniciliza el RecycleView con la lista de objetos obtenida por el ViewModel
     private fun initDataInRecycleView(view: View) {
         rvGtnCoches = view.findViewById(R.id.rvGtnCoches)
         rvGtnCoches.layoutManager = LinearLayoutManager(context)
         rvGtnCoches.adapter = GtnCocheAdapter(gtnCochesList, {onCocheSelected(it)})
     }
+
+    //Trae la lista de objetos(coches) del ViewModel con LiveData - Observer
     private fun getListCoches(view: View) {
         cocheViewModel.getLiveData().observe(viewLifecycleOwner, Observer {
             gtnCochesList = it
@@ -82,6 +90,7 @@ class CastleFragment : Fragment() {
         cocheViewModel.getCoches(requireContext())
     }
 
+    //Muestra el cuadro de dialogo del coche seleccionado
     private fun showDialogGtnCoches(cocheModel: CocheModel) {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -106,8 +115,102 @@ class CastleFragment : Fragment() {
         txtCambBatt.text = cocheModel.numCambBat.toString()
         txtCondic.text = cocheModel.condicionCoche
 
+        val iconViewEdit : ImageView = dialog.findViewById(R.id.iconEditCondCoche)
+        iconViewEdit.setOnClickListener {
+            txtViewToEditTxtCondCoche(txtCondic, dialog, iconViewEdit)
+        }
+
         dialog.show()
     }
+
+
+    // Remover el TextView actual y colocar un Edittxt con el valor que estaba
+    private fun txtViewToEditTxtCondCoche(txtCondCoche: TextView, dialog: Dialog, iconViewEdit: ImageView) {
+        val parentLayout = txtCondCoche.parent as LinearLayout
+        val index = parentLayout.indexOfChild(txtCondCoche)
+        parentLayout.removeViewAt(index)
+
+        val editTextCondCoche = EditText(dialog.context)
+        editTextCondCoche.id = R.id.txtDialogCondCoche
+        editTextCondCoche.layoutParams = txtCondCoche.layoutParams
+
+        parentLayout.addView(editTextCondCoche, index)
+        editTextCondCoche.requestFocus()
+        val imm = dialog.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(editTextCondCoche, InputMethodManager.SHOW_IMPLICIT)
+        iconViewEdit.setImageResource(R.drawable.icon_save)
+
+        iconViewEdit.setOnClickListener {
+            val newCondValue = editTextCondCoche.text.toString().trim()
+            if (newCondValue.isNotEmpty()) {
+                saveNewCondCoche(newCondValue, txtCondCoche, parentLayout, index, dialog, iconViewEdit)
+            } else {
+                restoreToTxtView(txtCondCoche, parentLayout, index, dialog, iconViewEdit)
+            }
+        }
+    }
+
+    // Función para guardar el nuevo valor y restaurar el diseño original
+    private fun saveNewCondCoche(
+        txtValorNew: String,
+        txtCondCoche: TextView,
+        parentLayout: LinearLayout,
+        index: Int,
+        dialog: Dialog,
+        iconViewEdit: ImageView
+    ) {
+        // Crear un nuevo TextView con el nuevo valor
+        val newTxtCondCoche = TextView(dialog.context)
+        newTxtCondCoche.id = R.id.txtDialogCondCoche
+        newTxtCondCoche.layoutParams = txtCondCoche.layoutParams
+        newTxtCondCoche.text = txtValorNew
+
+        // Configurar el nuevo TextView
+        newTxtCondCoche.textSize = 20f
+        newTxtCondCoche.setTextColor(ContextCompat.getColor(dialog.context, R.color.color_6to))
+        newTxtCondCoche.setPaddingRelative(5, 0, 0, 0)
+
+        // Remover el EditText y agregar el nuevo TextView al mismo índice
+        parentLayout.removeViewAt(index)
+        parentLayout.addView(newTxtCondCoche, index)
+
+        // Restaurar la apariencia original del icono de edición
+        iconViewEdit.setImageResource(R.drawable.icon_edit_square)
+
+        // Configurar el OnClickListener para volver a la edición
+        iconViewEdit.setOnClickListener {
+            txtViewToEditTxtCondCoche(newTxtCondCoche, dialog, iconViewEdit)
+        }
+    }
+
+    // Función para restaurar el diseño original en caso de campo nulo o con espacios en blanco
+    private fun restoreToTxtView(
+        txtCondCoche: TextView,
+        parentLayout: LinearLayout,
+        index: Int,
+        dialog: Dialog,
+        iconViewEdit: ImageView
+    ) {
+        val newTxtCondCoche = TextView(dialog.context)
+        newTxtCondCoche.id = R.id.txtDialogCondCoche
+        newTxtCondCoche.layoutParams = txtCondCoche.layoutParams
+        newTxtCondCoche.text = txtCondCoche.text
+
+        newTxtCondCoche.textSize = 20f
+        newTxtCondCoche.setTextColor(ContextCompat.getColor(dialog.context, R.color.color_6to))
+        newTxtCondCoche.setPaddingRelative(5, 0, 0, 0)
+
+        parentLayout.removeViewAt(index)
+        parentLayout.addView(newTxtCondCoche, index)
+
+        iconViewEdit.setImageResource(R.drawable.icon_edit_square)
+
+        iconViewEdit.setOnClickListener {
+            txtViewToEditTxtCondCoche(newTxtCondCoche, dialog, iconViewEdit )
+        }
+    }
+
+
 
     private fun loadImgCoche(cocheModel: CocheModel, imgGtnCoche: ImageView) {
         try {
