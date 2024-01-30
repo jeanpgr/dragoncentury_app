@@ -12,6 +12,8 @@
     <string name="str_lbl_dialog_cargas">Cargas:</string>
     <string name="str_lbl_dialog_cambat">Cambios Bateria:</string>
     <string name="str_lbl_dialog_cond">Condición:</string>
+    <string name="str_btn_aceptar">Aceptar</string>
+    <string name="str_btn_cancelar">Cancelar</string>
     <!-- TODO: Remove or change this placeholder text -->
 
 </resources>

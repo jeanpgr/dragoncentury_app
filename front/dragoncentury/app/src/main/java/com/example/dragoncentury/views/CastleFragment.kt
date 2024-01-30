@@ -11,10 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -31,7 +33,6 @@ import java.io.IOException
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-
 
 class CastleFragment : Fragment() {
 
@@ -115,17 +116,60 @@ class CastleFragment : Fragment() {
         txtCambBatt.text = cocheModel.numCambBat.toString()
         txtCondic.text = cocheModel.condicionCoche
 
-        val iconViewEdit : ImageView = dialog.findViewById(R.id.iconEditCondCoche)
-        iconViewEdit.setOnClickListener {
-            txtViewToEditTxtCondCoche(txtCondic, dialog, iconViewEdit)
+        val iconEditCond : ImageView = dialog.findViewById(R.id.iconEditCondCoche)
+        iconEditCond.setOnClickListener {
+            txtViewToEditTxtCondCoche(cocheModel, txtCondic, dialog, iconEditCond)
+        }
+
+        val iconAddNumCargas : ImageView = dialog.findViewById(R.id.iconAddNumCargas)
+        iconAddNumCargas.setOnClickListener {
+            showDialogConfirmar("¿Desea confirmar el incremento en el número de cargas?",
+                {addNumCargas(cocheModel, txtNumCargas)})
+
+        }
+
+        val iconNumCambBat : ImageView = dialog.findViewById(R.id.iconAddNumCambBat)
+        iconNumCambBat.setOnClickListener {
+            showDialogConfirmar("¿Desea confirmar el incremento en el número de cambios de batería?",
+                {addNumCambBat(cocheModel, txtCambBatt)})
         }
 
         dialog.show()
     }
 
+    // Funcion para mostrar el dialog de confirmacion se pasa el mensaje y el metodo a ejecutar
+    private fun showDialogConfirmar(msj: String, onAceptarClick: () -> Unit) {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setContentView(R.layout.dialog_confirmar)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val txtMessage : TextView = dialog.findViewById(R.id.txtDialogConfirmar)
+        val btnAceptar : Button = dialog.findViewById(R.id.btnAceptar)
+        val btnCancelar : Button = dialog.findViewById(R.id.btnCancelar)
+
+        txtMessage.text = msj
+
+        btnAceptar.setOnClickListener {
+            onAceptarClick.invoke()
+            dialog.dismiss()
+        }
+
+        btnCancelar.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    // Funcion para enviar el objeto actualizado al viewmodel y lo acualice con volley
+    private fun updateCoche(cocheModel: CocheModel) {
+        cocheViewModel.updateCoche(requireContext(), cocheModel)
+    }
 
     // Remover el TextView actual y colocar un Edittxt con el valor que estaba
-    private fun txtViewToEditTxtCondCoche(txtCondCoche: TextView, dialog: Dialog, iconViewEdit: ImageView) {
+    private fun txtViewToEditTxtCondCoche(cocheModel: CocheModel, txtCondCoche: TextView, dialog: Dialog, iconViewEdit: ImageView) {
         val parentLayout = txtCondCoche.parent as LinearLayout
         val index = parentLayout.indexOfChild(txtCondCoche)
         parentLayout.removeViewAt(index)
@@ -143,15 +187,17 @@ class CastleFragment : Fragment() {
         iconViewEdit.setOnClickListener {
             val newCondValue = editTextCondCoche.text.toString().trim()
             if (newCondValue.isNotEmpty()) {
-                saveNewCondCoche(newCondValue, txtCondCoche, parentLayout, index, dialog, iconViewEdit)
+                saveNewCondCoche(cocheModel, newCondValue, txtCondCoche, parentLayout, index, dialog, iconViewEdit)
             } else {
-                restoreToTxtView(txtCondCoche, parentLayout, index, dialog, iconViewEdit)
+                Toast.makeText(requireContext(), "No ingrese campos vacios", Toast.LENGTH_LONG).show()
+                restoreToTxtViewCondCoche(cocheModel, txtCondCoche, parentLayout, index, dialog, iconViewEdit)
             }
         }
     }
 
-    // Función para guardar el nuevo valor y restaurar el diseño original
+    // Función para guardar el nuevo valor de la condicion del coche y restaurar el diseño original
     private fun saveNewCondCoche(
+        cocheModel: CocheModel,
         txtValorNew: String,
         txtCondCoche: TextView,
         parentLayout: LinearLayout,
@@ -159,6 +205,8 @@ class CastleFragment : Fragment() {
         dialog: Dialog,
         iconViewEdit: ImageView
     ) {
+        cocheModel.condicionCoche = txtValorNew
+        updateCoche(cocheModel)
         // Crear un nuevo TextView con el nuevo valor
         val newTxtCondCoche = TextView(dialog.context)
         newTxtCondCoche.id = R.id.txtDialogCondCoche
@@ -177,14 +225,13 @@ class CastleFragment : Fragment() {
         // Restaurar la apariencia original del icono de edición
         iconViewEdit.setImageResource(R.drawable.icon_edit_square)
 
-        // Configurar el OnClickListener para volver a la edición
-        iconViewEdit.setOnClickListener {
-            txtViewToEditTxtCondCoche(newTxtCondCoche, dialog, iconViewEdit)
-        }
+        dialog.dismiss()
+        showDialogGtnCoches(cocheModel)
     }
 
-    // Función para restaurar el diseño original en caso de campo nulo o con espacios en blanco
-    private fun restoreToTxtView(
+    // Función para restaurar el diseño original del txtView de condicion coche en caso de campo nulo o con espacios en blanco
+    private fun restoreToTxtViewCondCoche(
+        cocheModel: CocheModel,
         txtCondCoche: TextView,
         parentLayout: LinearLayout,
         index: Int,
@@ -205,12 +252,9 @@ class CastleFragment : Fragment() {
 
         iconViewEdit.setImageResource(R.drawable.icon_edit_square)
 
-        iconViewEdit.setOnClickListener {
-            txtViewToEditTxtCondCoche(newTxtCondCoche, dialog, iconViewEdit )
-        }
+        dialog.dismiss()
+        showDialogGtnCoches(cocheModel)
     }
-
-
 
     private fun loadImgCoche(cocheModel: CocheModel, imgGtnCoche: ImageView) {
         try {
@@ -230,5 +274,25 @@ class CastleFragment : Fragment() {
         }
     }
 
+    // Funcion para incrementar el numero de cargas en el txtview y despues enviar el objeto actualizado
+    private fun addNumCargas(cocheModel: CocheModel, txtNumCargas: TextView) {
+        val currentValue = txtNumCargas.text.toString()
+        val currentNumCargas = currentValue.toIntOrNull()
+        val newNumCargas = currentNumCargas!! + 1
+        txtNumCargas.text = newNumCargas.toString()
 
+        cocheModel.numCargasCoche = newNumCargas
+        updateCoche(cocheModel)
+    }
+
+    // Funcion para incrementar el numero de cambios de bateria en el txtview y despues enviar el objeto actualizado
+    private fun addNumCambBat(cocheModel: CocheModel, txtNumCambBat: TextView) {
+        val currentValue = txtNumCambBat.text.toString()
+        val currentNumCambBat = currentValue.toIntOrNull()
+        val newNumCambBat = currentNumCambBat!! + 1
+        txtNumCambBat.text = newNumCambBat.toString()
+
+        cocheModel.numCambBat = newNumCambBat
+        updateCoche(cocheModel)
+    }
 }

@@ -3,10 +3,10 @@ package com.example.dragoncentury.models
 data class CocheModel(
     val idCoche: Int,
     val imgCoche: ByteArray,
-    val nameCoche: String,
-    val colorCoche: String,
-    val numCargasCoche: Int,
-    val numCambBat: Int,
-    val numVueltas: Int,
-    val condicionCoche: String
+    var nameCoche: String,
+    var colorCoche: String,
+    var numCargasCoche: Int,
+    var numCambBat: Int,
+    var numVueltas: Int,
+    var condicionCoche: String
 )

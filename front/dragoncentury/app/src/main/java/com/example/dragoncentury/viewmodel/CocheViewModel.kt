@@ -21,4 +21,8 @@ class CocheViewModel : ViewModel() {
     fun getLiveData(): MutableLiveData<List<CocheModel>> {
         return cocheModel
     }
+
+    fun updateCoche(context: Context, cocheModel: CocheModel) {
+        CocheVolley.updateCoche(context, cocheModel )
+    }
 }
