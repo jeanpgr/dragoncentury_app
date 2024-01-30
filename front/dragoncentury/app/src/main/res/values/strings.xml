@@ -20,6 +20,7 @@
     <string name="str_lbl_desde">DESDE</string>
     <string name="str_lbl_hasta">HASTA</string>
     <string name="str_btn_buscar">Buscar</string>
+    <string name="str_btn_limpiar_filtro">Limpiar Filtro</string>
     <!-- TODO: Remove or change this placeholder text -->
 
 </resources>
