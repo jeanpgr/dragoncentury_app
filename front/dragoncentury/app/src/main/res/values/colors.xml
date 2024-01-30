@@ -15,6 +15,7 @@
     <color name="color_1ro">#ffd02c</color>
     <color name="color_3ro">#e5261d</color>
     <color name="color_4to">#ad191c</color>
-    <color name="color_efecto_btn">#80ad191c</color>
+    <color name="color_efect_btn">#80ad191c</color>
+    <color name="color_efect_btn_cancel">#608b9395</color>
 
 </resources>
