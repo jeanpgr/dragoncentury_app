@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="150sp"
     app:cardCornerRadius="15dp"
@@ -27,7 +26,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txtNameCoche"
+            android:id="@+id/txtNumReport"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
@@ -40,7 +39,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txtColor"
+            android:id="@+id/txtFechaReport"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
@@ -50,10 +49,10 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
-            app:layout_constraintTop_toBottomOf="@+id/txtNameCoche" />
+            app:layout_constraintTop_toBottomOf="@+id/txtNumReport" />
 
         <TextView
-            android:id="@+id/txtNumCargas"
+            android:id="@+id/txtTotalVueltas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
@@ -63,11 +62,11 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
-            app:layout_constraintTop_toBottomOf="@+id/txtColor" />
+            app:layout_constraintTop_toBottomOf="@+id/txtFechaReport" />
 
 
         <TextView
-            android:id="@+id/txtCondicion"
+            android:id="@+id/txtTotalVenta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
@@ -79,7 +78,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
-            app:layout_constraintTop_toBottomOf="@+id/txtNumCargas" />
+            app:layout_constraintTop_toBottomOf="@+id/txtTotalVueltas" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
