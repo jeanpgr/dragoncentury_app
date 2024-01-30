@@ -26,7 +26,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txtNumReport"
+            android:id="@+id/txtNameCoche"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
@@ -39,7 +39,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txtFechaReport"
+            android:id="@+id/txtColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
@@ -49,10 +49,10 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
-            app:layout_constraintTop_toBottomOf="@+id/txtNumReport" />
+            app:layout_constraintTop_toBottomOf="@+id/txtNameCoche" />
 
         <TextView
-            android:id="@+id/txtTotalVueltas"
+            android:id="@+id/txtNumCargas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
@@ -62,11 +62,11 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
-            app:layout_constraintTop_toBottomOf="@+id/txtFechaReport" />
+            app:layout_constraintTop_toBottomOf="@+id/txtColor" />
 
 
         <TextView
-            android:id="@+id/txtTotalVenta"
+            android:id="@+id/txtCondicion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
@@ -78,7 +78,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
-            app:layout_constraintTop_toBottomOf="@+id/txtTotalVueltas" />
+            app:layout_constraintTop_toBottomOf="@+id/txtNumCargas" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
