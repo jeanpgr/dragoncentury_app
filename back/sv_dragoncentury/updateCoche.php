@@ -6,17 +6,18 @@ header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 
 include 'conexion.php';
 
-$id_coche= $_REQUEST['id_coche'];
-$num_charges = $_REQUEST['num_charges'];
-$num_change_battery = $_REQUEST['num_change_battery'];
-$condic_coche = $_REQUEST['condic_coche'];
+$id_coche = isset($_REQUEST['id_coche']) ? $_REQUEST['id_coche'] : '';
+$num_charges = isset($_REQUEST['num_charges']) ? $_REQUEST['num_charges'] : '';
+$num_change_battery = isset($_REQUEST['num_change_battery']) ? $_REQUEST['num_change_battery'] : '';
+$condic_coche = isset($_REQUEST['condic_coche']) ? $_REQUEST['condic_coche'] : '';
 
-$sqlUpdateCoche = "UPDATE coches SET num_charges='$num_charges', num_change_battery='$num_change_battery',
-                                         condic_coche='$condic_coche'
-                                     WHERE id_coche='$id_coche'";
+$sqlUpdateCoche = "UPDATE coches SET num_charges=?, num_change_battery=?, condic_coche=? WHERE id_coche=?";
+$stmt = $conexion->prepare($sqlUpdateCoche);
 
-$conexion->query($sqlUpdateCoche);
+$stmt->bind_param("iiis", $num_charges, $num_change_battery, $condic_coche, $id_coche);
 
+$stmt->execute();
+$stmt->close();
 $conexion->close();
 
 ?>
