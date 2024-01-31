@@ -14,7 +14,7 @@ $condic_coche = isset($_REQUEST['condic_coche']) ? $_REQUEST['condic_coche'] : '
 $sqlUpdateCoche = "UPDATE coches SET num_charges=?, num_change_battery=?, condic_coche=? WHERE id_coche=?";
 $stmt = $conexion->prepare($sqlUpdateCoche);
 
-$stmt->bind_param("iiis", $num_charges, $num_change_battery, $condic_coche, $id_coche);
+$stmt->bind_param("iisi", $num_charges, $num_change_battery, $condic_coche, $id_coche);
 
 $stmt->execute();
 $stmt->close();
