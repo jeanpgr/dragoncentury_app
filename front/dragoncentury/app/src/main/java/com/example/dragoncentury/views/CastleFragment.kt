@@ -84,7 +84,7 @@ class CastleFragment : Fragment() {
 
     //Trae la lista de objetos(coches) del ViewModel con LiveData - Observer
     private fun getListCoches(view: View) {
-        cocheViewModel.getLiveData().observe(viewLifecycleOwner, Observer {
+        cocheViewModel.getLiveDataCoches().observe(viewLifecycleOwner, Observer {
             gtnCochesList = it
             initDataInRecycleView(view)
         })

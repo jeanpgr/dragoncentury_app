@@ -4,10 +4,11 @@ import java.math.BigDecimal
 
 data class ReportModel(
     val idReporte: Int,
-    val idNovPago: Int,
-    val idUser: Int,
-    val date: String,
+    val fecha: String,
     val totalVueltas: Int,
-    val totalGastos: BigDecimal,
-    val totalVenta: BigDecimal
+    val totalVenta: BigDecimal,
+    val descripNov: String,
+    val gastoTotal: BigDecimal,
+    val nombsUser: String,
+    val coches: List<CocheReportModel>
 )

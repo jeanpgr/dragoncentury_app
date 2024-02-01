@@ -18,7 +18,7 @@ class CocheViewModel : ViewModel() {
     }
 
     //Retorna la lista LiveData
-    fun getLiveData(): MutableLiveData<List<CocheModel>> {
+    fun getLiveDataCoches(): MutableLiveData<List<CocheModel>> {
         return cocheModel
     }
 

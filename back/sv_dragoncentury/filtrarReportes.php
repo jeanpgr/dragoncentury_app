@@ -9,18 +9,16 @@ include 'conexion.php';
 $date_desde = isset($_REQUEST['date_desde']) ? $_REQUEST['date_desde'] : null;
 $date_hasta = isset($_REQUEST['date_hasta']) ? $_REQUEST['date_hasta'] : null;
 
-
 if ($date_desde !== null && $date_hasta !== null) {
     
-    $sql = "SELECT rv.id_reporte, rv.fecha, rv.total_vueltas, rv.total_venta, ng.gasto_total, 
-            c.nomb_coche, dv.lectura_inicial, dv.lectura_final, dv.num_vueltas, u.nomb_user, u.apell_user 
+    $sql = "SELECT rv.id_reporte, rv.fecha, rv.total_vueltas, rv.total_venta, ng.descrip_nov, ng.gasto_total,
+                    c.nomb_coche, dv.lectura_inicial, dv.lectura_final, dv.num_vueltas, u.nomb_user, u.apell_user 
             FROM reporte_vueltas AS rv 
             INNER JOIN novedades_gastos AS ng ON rv.id_nov_gasto_per = ng.id_nov_gasto 
             INNER JOIN detalle_vuelta AS dv ON rv.id_reporte = dv.id_reporte_per 
             INNER JOIN usuarios AS u ON rv.id_user_per = u.id_user 
             INNER JOIN coches AS c ON dv.id_coche_per = c.id_coche
             WHERE rv.fecha BETWEEN ? AND ?";
-
 
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("ss", $date_desde, $date_hasta);
@@ -44,9 +42,9 @@ if ($date_desde !== null && $date_hasta !== null) {
                 'fecha' => $fila['fecha'],
                 'total_vueltas' => $fila['total_vueltas'],
                 'total_venta' => $fila['total_venta'],
+                'descrip_nov' => $fila['descrip_nov'],
                 'gasto_total' => $fila['gasto_total'],
-                'nomb_user' => $fila['nomb_user'],
-                'apell_user' => $fila['apell_user'],
+                'nombs_user' => $fila['nomb_user'] . " " . $fila['apell_user'],
                 'coches' => array()
             );
         }
