@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Dragon Century</string>
+    <string name="str_name_user">Nombre de Usuario</string>
+    <string name="str_password">Contraseña</string>
+    <string name="str_login">Iniciar sesión</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="str_der_reserv">©2024 Dragon Century. Todos los derechos reservados.</string>
+    <string name="str_lbl_dialog_color">Color:</string>
+    <string name="str_lbl_dialog_totvuel">Total Vueltas:</string>
+    <string name="str_lbl_dialog_cargas">Cargas:</string>
+    <string name="str_lbl_dialog_cambat">Cambios Bateria:</string>
+    <string name="str_lbl_dialog_cond">Condición:</string>
+    <string name="str_btn_aceptar">Aceptar</string>
+    <string name="str_btn_cancelar">Cancelar</string>
+    <string name="str_title_gtncoches">Gestionar Coches</string>
+    <string name="str_title_reportes">Reportes</string>
+    <string name="str_lbl_fecha_actual">Fecha Actual:</string>
+    <string name="str_btn_generar_reporte">Generar Reporte</string>
+    <string name="str_lbl_filtro_reportes">Ingrese un rango de fechas para buscar reportes</string>
+    <string name="str_lbl_desde">DESDE</string>
+    <string name="str_lbl_hasta">HASTA</string>
+    <string name="str_btn_buscar">Buscar</string>
+    <string name="str_btn_limpiar_filtro">Limpiar Filtro</string>
+    <string name="str_btn_ver_reporte">Ver Reporte</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
+</resources>
