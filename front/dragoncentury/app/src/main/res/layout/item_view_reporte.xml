@@ -85,7 +85,7 @@
             android:id="@+id/btnVerReport"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="80dp"
             android:text="@string/str_btn_ver_reporte"
             android:background="@drawable/custom_btn"
             app:layout_constraintBottom_toBottomOf="parent"

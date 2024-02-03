@@ -105,7 +105,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btnCleanFiltro"
+            android:id="@+id/btnCleanFilter"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:background="@drawable/custom_btn"
@@ -115,7 +115,7 @@
             android:id="@+id/btnBuscarReporte"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30sp"
+            android:layout_marginStart="40sp"
             android:background="@drawable/custom_btn"
             android:text="@string/str_btn_buscar"/>
 

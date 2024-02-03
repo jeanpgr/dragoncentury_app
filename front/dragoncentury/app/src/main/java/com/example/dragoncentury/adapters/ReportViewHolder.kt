@@ -12,9 +12,9 @@ class ReportViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     fun render(reportModel: ReportModel) {
         binding.txtNumReport.text = reportModel.idReporte.toString()
-        binding.txtFechaReport.text = reportModel.date
+        binding.txtFechaReport.text = reportModel.fecha
         binding.txtTotalVueltas.text = reportModel.totalVueltas.toString()
-        binding.txtTotalGastos.text = reportModel.totalGastos.toString()
+        binding.txtTotalGastos.text = reportModel.gastoTotal.toString()
         binding.txtTotalVenta.text = reportModel.totalVenta.toString()
     }
 }
