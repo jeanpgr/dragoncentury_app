@@ -28,11 +28,11 @@ class DatePickerFragment(val listener:(day:Int, month:Int, year:Int) -> Unit): D
         // Personaliza los botones directamente en el DatePickerDialog
         picker.setOnShowListener { dialog ->
             val positiveButton = (dialog as DatePickerDialog).getButton(DialogInterface.BUTTON_POSITIVE)
-            positiveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_6to))
+            positiveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_4to))
 
             // Personaliza el botón negativo (cancelar) si es necesario
             val negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
-            negativeButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_6to))
+            negativeButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_4to))
         }
 
         return picker

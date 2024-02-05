@@ -22,6 +22,16 @@
     <string name="str_btn_buscar">Buscar</string>
     <string name="str_btn_limpiar_filtro">Limpiar Filtro</string>
     <string name="str_btn_ver_reporte">Ver Reporte</string>
+    <string name="str_lbl_numreport">Num reporte:</string>
+    <string name="str_lbl_fecha">Fecha:</string>
+    <string name="str_lbl_totalvueltas">Total Vueltas:</string>
+    <string name="str_lbl_totalgastos">Total Gastos:</string>
+    <string name="str_lbl_totalventa">Total Venta:</string>
+    <string name="str_lbl_lectinicial">Lect. Inicial</string>
+    <string name="str_lbl_lectfinal">Lect. Final</string>
+    <string name="str_btn_addgastos">Agregar Gastos</string>
+    <string name="str_btn_generar">Generar</string>
+    <string name="str_hit_detbrev">Detallar brevemente...</string>
     <!-- TODO: Remove or change this placeholder text -->
 
 </resources>

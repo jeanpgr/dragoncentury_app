@@ -1,0 +1,284 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="580dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/color_8vo"
+    app:cardCornerRadius="15dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtNameUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombres User"
+                android:layout_marginStart="25sp"
+                android:layout_marginTop="20sp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/color_6to"/>
+
+            <Button
+                android:id="@+id/btnGenerateReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20sp"
+                android:layout_marginStart="50sp"
+                android:text="@string/str_btn_generar"
+                android:background="@drawable/custom_btn"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtFechaActualGR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginTop="10sp"
+            android:layout_marginStart="25sp"
+            android:textSize="20sp"
+            android:text="Fecha"
+            android:textColor="@color/color_6to"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginTop="10sp"
+                android:layout_marginStart="160sp"
+                android:textSize="20sp"
+                android:text="@string/str_lbl_lectinicial"
+                android:textColor="@color/color_6to"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginTop="10sp"
+                android:layout_marginStart="25sp"
+                android:textSize="20sp"
+                android:text="@string/str_lbl_lectfinal"
+                android:textColor="@color/color_6to"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtDraRoj"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginTop="10sp"
+                android:layout_marginStart="25sp"
+                android:textSize="20sp"
+                android:text="Nom Coche 1"
+                android:textColor="@color/color_6to"/>
+
+            <TextView
+                android:id="@+id/txtLectIniDraRoj"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginTop="10sp"
+                android:layout_marginStart="25sp"
+                android:textSize="20sp"
+                android:text="LectIni"
+                android:textColor="@color/color_6to"/>
+
+            <EditText
+                android:id="@+id/editTxtLectFinDraRoj"
+                android:layout_width="70sp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="65sp"
+                android:layout_marginTop="9sp"
+                android:inputType="number"
+                android:background="@drawable/custom_edit_txt"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtDraAma"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginTop="10sp"
+                android:layout_marginStart="25sp"
+                android:textSize="20sp"
+                android:text="Nom Coche 2"
+                android:textColor="@color/color_6to"/>
+
+            <TextView
+                android:id="@+id/txtLectIniDraAma"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginTop="10sp"
+                android:layout_marginStart="25sp"
+                android:textSize="20sp"
+                android:text="LectIni"
+                android:textColor="@color/color_6to"/>
+
+            <EditText
+                android:id="@+id/editTxtLectFinDraAma"
+                android:layout_width="70sp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="65sp"
+                android:layout_marginTop="9sp"
+                android:inputType="number"
+                android:background="@drawable/custom_edit_txt"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtDraChi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginTop="10sp"
+                android:layout_marginStart="25sp"
+                android:textSize="20sp"
+                android:text="Nom Coche 3"
+                android:textColor="@color/color_6to"/>
+
+            <TextView
+                android:id="@+id/txtLectIniDraChi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginTop="10sp"
+                android:layout_marginStart="25sp"
+                android:textSize="20sp"
+                android:text="LectIni"
+                android:textColor="@color/color_6to"/>
+
+            <EditText
+                android:id="@+id/editTxtLectFinDraChi"
+                android:layout_width="70sp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="65sp"
+                android:layout_marginTop="9sp"
+                android:inputType="number"
+                android:background="@drawable/custom_edit_txt"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtDraDC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginTop="10sp"
+                android:layout_marginStart="25sp"
+                android:textSize="20sp"
+                android:text="Nom Coche 1"
+                android:textColor="@color/color_6to"/>
+
+            <TextView
+                android:id="@+id/txtLectIniDraDC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginTop="10sp"
+                android:layout_marginStart="25sp"
+                android:textSize="20sp"
+                android:text="LectIni"
+                android:textColor="@color/color_6to"/>
+
+            <EditText
+                android:id="@+id/editTxtLectFinDraDC"
+                android:layout_width="70sp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="65sp"
+                android:layout_marginTop="9sp"
+                android:inputType="number"
+                android:background="@drawable/custom_edit_txt"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnAddGastos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_btn"
+            android:text="@string/str_btn_addgastos"
+            android:layout_marginTop="15sp"
+            android:layout_marginStart="25sp">
+        </Button>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15sp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/editTxtDescrGasto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/str_hit_detbrev"
+                android:inputType="textMultiLine"
+                android:background="@drawable/custom_edit_txt"
+                android:lines="4"
+                android:layout_marginHorizontal="25sp"
+                android:gravity="start|top"
+                android:padding="15dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginStart="25sp"
+                    android:textSize="20sp"
+                    android:text="@string/str_lbl_totalgastos"
+                    android:textColor="@color/color_6to"/>
+
+                <EditText
+                    android:id="@+id/editTxtTotalGasto"
+                    android:layout_width="70sp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10sp"
+                    android:layout_marginTop="9sp"
+                    android:inputType="numberDecimal"
+                    android:background="@drawable/custom_edit_txt"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

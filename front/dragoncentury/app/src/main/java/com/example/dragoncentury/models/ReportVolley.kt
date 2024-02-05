@@ -27,8 +27,11 @@ class ReportVolley {
                 Method.POST, url,
                 Response.Listener { response ->
                     reportsList = parseJson(response)
-                    // Llama a la devolución de llamada con la lista obtenida
-                    callback(reportsList)
+                    if (reportsList.isEmpty()) {
+                        Toast.makeText(context, "No se encontraron reportes para el rango de fechas especificado", Toast.LENGTH_LONG).show()
+                    } else {
+                        callback(reportsList)
+                    }
                 },
                 { error ->
                      Toast.makeText(context, "Error del servidor: ${error.message} " , Toast.LENGTH_SHORT).show()
