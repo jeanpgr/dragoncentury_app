@@ -1,7 +1,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="580dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/color_8vo"
     app:cardCornerRadius="15dp">
@@ -18,7 +18,7 @@
 
             <TextView
                 android:id="@+id/txtNameUser"
-                android:layout_width="wrap_content"
+                android:layout_width="200sp"
                 android:layout_height="wrap_content"
                 android:text="Nombres User"
                 android:layout_marginStart="25sp"
@@ -29,8 +29,10 @@
 
             <Button
                 android:id="@+id/btnGenerateReport"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="25sp"
                 android:layout_marginTop="20sp"
                 android:layout_marginStart="50sp"
                 android:text="@string/str_btn_generar"
@@ -81,7 +83,7 @@
 
             <TextView
                 android:id="@+id/txtDraRoj"
-                android:layout_width="wrap_content"
+                android:layout_width="125sp"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:layout_marginTop="10sp"
@@ -92,20 +94,23 @@
 
             <TextView
                 android:id="@+id/txtLectIniDraRoj"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:textStyle="bold"
                 android:layout_marginTop="10sp"
-                android:layout_marginStart="25sp"
+                android:layout_marginStart="35sp"
                 android:textSize="20sp"
                 android:text="LectIni"
                 android:textColor="@color/color_6to"/>
 
             <EditText
                 android:id="@+id/editTxtLectFinDraRoj"
-                android:layout_width="70sp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="65sp"
+                android:layout_weight="1"
+                android:layout_marginStart="35sp"
+                android:layout_marginEnd="35sp"
                 android:layout_marginTop="9sp"
                 android:inputType="number"
                 android:background="@drawable/custom_edit_txt"/>
@@ -118,7 +123,7 @@
 
             <TextView
                 android:id="@+id/txtDraAma"
-                android:layout_width="wrap_content"
+                android:layout_width="125sp"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:layout_marginTop="10sp"
@@ -129,20 +134,23 @@
 
             <TextView
                 android:id="@+id/txtLectIniDraAma"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:textStyle="bold"
                 android:layout_marginTop="10sp"
-                android:layout_marginStart="25sp"
+                android:layout_marginStart="35sp"
                 android:textSize="20sp"
                 android:text="LectIni"
                 android:textColor="@color/color_6to"/>
 
             <EditText
                 android:id="@+id/editTxtLectFinDraAma"
-                android:layout_width="70sp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="65sp"
+                android:layout_weight="1"
+                android:layout_marginStart="35sp"
+                android:layout_marginEnd="35sp"
                 android:layout_marginTop="9sp"
                 android:inputType="number"
                 android:background="@drawable/custom_edit_txt"/>
@@ -155,7 +163,7 @@
 
             <TextView
                 android:id="@+id/txtDraChi"
-                android:layout_width="wrap_content"
+                android:layout_width="125sp"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:layout_marginTop="10sp"
@@ -166,20 +174,23 @@
 
             <TextView
                 android:id="@+id/txtLectIniDraChi"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:textStyle="bold"
                 android:layout_marginTop="10sp"
-                android:layout_marginStart="25sp"
+                android:layout_marginStart="35sp"
                 android:textSize="20sp"
                 android:text="LectIni"
                 android:textColor="@color/color_6to"/>
 
             <EditText
                 android:id="@+id/editTxtLectFinDraChi"
-                android:layout_width="70sp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="65sp"
+                android:layout_weight="1"
+                android:layout_marginStart="35sp"
+                android:layout_marginEnd="35sp"
                 android:layout_marginTop="9sp"
                 android:inputType="number"
                 android:background="@drawable/custom_edit_txt"/>
@@ -192,31 +203,34 @@
 
             <TextView
                 android:id="@+id/txtDraDC"
-                android:layout_width="wrap_content"
+                android:layout_width="125sp"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:layout_marginTop="10sp"
                 android:layout_marginStart="25sp"
                 android:textSize="20sp"
-                android:text="Nom Coche 1"
+                android:text="Nom Coche 4"
                 android:textColor="@color/color_6to"/>
 
             <TextView
                 android:id="@+id/txtLectIniDraDC"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:textStyle="bold"
                 android:layout_marginTop="10sp"
-                android:layout_marginStart="25sp"
+                android:layout_marginStart="35sp"
                 android:textSize="20sp"
                 android:text="LectIni"
                 android:textColor="@color/color_6to"/>
 
             <EditText
                 android:id="@+id/editTxtLectFinDraDC"
-                android:layout_width="70sp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="65sp"
+                android:layout_weight="1"
+                android:layout_marginStart="35sp"
+                android:layout_marginEnd="35sp"
                 android:layout_marginTop="9sp"
                 android:inputType="number"
                 android:background="@drawable/custom_edit_txt"/>
@@ -230,13 +244,15 @@
             android:background="@drawable/custom_btn"
             android:text="@string/str_btn_addgastos"
             android:layout_marginTop="15sp"
+            android:layout_marginBottom="15sp"
             android:layout_marginStart="25sp">
         </Button>
 
         <LinearLayout
+            android:id="@+id/linLaytGastos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15sp"
+
             android:orientation="vertical">
 
             <EditText
@@ -254,7 +270,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="5sp"
+                android:layout_marginBottom="20sp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -272,6 +290,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10sp"
                     android:layout_marginTop="9sp"
+                    android:hint="0.00"
                     android:inputType="numberDecimal"
                     android:background="@drawable/custom_edit_txt"/>
 

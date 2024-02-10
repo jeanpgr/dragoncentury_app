@@ -33,10 +33,10 @@ class CocheVolley {
             ) {
                 override fun getParams(): Map<String, String>? {
                 val params = HashMap<String, String>()
-                    params["id_coche"] =cocheModel.idCoche.toString()
-                    params["num_charges"] =cocheModel.numCargasCoche.toString()
-                    params["num_change_battery"] =cocheModel.numCambBat.toString()
-                    params["condic_coche"] =cocheModel.condicionCoche
+                    params["id_coche"] = cocheModel.idCoche.toString()
+                    params["num_charges"] = cocheModel.numCargasCoche.toString()
+                    params["num_change_battery"] = cocheModel.numCambBat.toString()
+                    params["condic_coche"] = cocheModel.condicionCoche
 
                     return params
                 }

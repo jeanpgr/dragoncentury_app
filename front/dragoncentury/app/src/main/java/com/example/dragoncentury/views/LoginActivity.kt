@@ -48,13 +48,13 @@ class LoginActivity : AppCompatActivity() {
                 try {
                     val jsonObject = JSONObject(response)
                     if (jsonObject.length() > 0) {
-                        val idUser = jsonObject.getString("id_user")
+                        val idUser = jsonObject.getInt("id_user")
 
                         Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
                         // Procesa la respuesta del servidor
                         val sharedPref = getSharedPreferences("login_data", MODE_PRIVATE)
                         val editor = sharedPref.edit()
-                        editor.putString("id_user", idUser)
+                        editor.putInt("id_user", idUser)
                         editor.apply()
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
