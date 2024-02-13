@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
+import android.text.InputFilter
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,8 +19,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,14 +26,17 @@ import com.example.dragoncentury.R
 import com.example.dragoncentury.adapters.ReportAdapter
 import com.example.dragoncentury.customcomponents.DatePickerFragment
 import com.example.dragoncentury.models.CocheModel
+import com.example.dragoncentury.models.CocheReportModel
 import com.example.dragoncentury.models.ReportModel
 import com.example.dragoncentury.models.UserModel
 import com.example.dragoncentury.viewmodel.CocheViewModel
 import com.example.dragoncentury.viewmodel.ReportViewModel
 import com.example.dragoncentury.viewmodel.UserViewModel
+import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.math.min
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -115,7 +116,7 @@ class ReportsFragment : Fragment() {
         }
 
         btnGenerateReport.setOnClickListener {
-            showDialogGenerateReport(view)
+            showDialogGenerateReport()
         }
 
         btnBuscarReport.setOnClickListener {
@@ -135,19 +136,19 @@ class ReportsFragment : Fragment() {
         }
     }
 
-    //Funcion para mostrar el DatePicker
+    //Función para mostrar el DatePicker
     private fun showDatePickerDialog(editTxtDate: EditText) {
         val datePicker = DatePickerFragment {day, month, year ->  onDateSelected(day, month, year, editTxtDate) }
         datePicker.show(childFragmentManager, "datePicker")
     }
 
-    //Funcion para setear edittxt con las fechas seleccionadas
+    //Función para setear edittxt con las fechas seleccionadas
     private fun onDateSelected(day: Int, month: Int, year: Int, editTxtDate: EditText) {
         val monthReal = month + 1
         editTxtDate.setText("$year-$monthReal-$day")
     }
 
-    // funcion para obtener los reportes filtrados
+    // función para obtener los reportes filtrados
     private fun getFilterReports(view: View, dateDesde: String, dateHasta: String) {
         reportViewModel.getLiveDataReports().observe(viewLifecycleOwner, Observer {
             reportsList = it
@@ -173,7 +174,7 @@ class ReportsFragment : Fragment() {
     }
 
     // Funcion para mostrar el dialog de generar reporte
-    private fun showDialogGenerateReport(view: View) {
+    private fun showDialogGenerateReport() {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
@@ -214,6 +215,12 @@ class ReportsFragment : Fragment() {
         val editTxtLectFinDraChi : EditText = dialog.findViewById(R.id.editTxtLectFinDraChi)
         val editTxtLectFinDraDC : EditText = dialog.findViewById(R.id.editTxtLectFinDraDC)
 
+        //Control de valores de lectura (Lectura final no sea menor a Lectura Inicial)
+        cochesList.getOrNull(0)?.let { controlInputLectFinal(editTxtLectFinDraRoj, it.numVueltas) }
+        cochesList.getOrNull(1)?.let { controlInputLectFinal(editTxtLectFinDraChi, it.numVueltas) }
+        cochesList.getOrNull(2)?.let { controlInputLectFinal(editTxtLectFinDraAma, it.numVueltas) }
+        cochesList.getOrNull(3)?.let { controlInputLectFinal(editTxtLectFinDraDC, it.numVueltas) }
+
         val editTxtDescGasto: EditText = dialog.findViewById(R.id.editTxtDescrGasto)
         val editTxtTotalGasto: EditText = dialog.findViewById(R.id.editTxtTotalGasto)
 
@@ -227,9 +234,45 @@ class ReportsFragment : Fragment() {
         }
 
         btnGenerateReport.setOnClickListener {
+            removeFocusEditTxt(editTxtLectFinDraRoj,editTxtLectFinDraChi, editTxtLectFinDraAma, editTxtLectFinDraDC)
 
+            if (!editTxtLectFinDraRoj.text.isNullOrBlank() &&
+                !editTxtLectFinDraChi.text.isNullOrBlank() &&
+                !editTxtLectFinDraAma.text.isNullOrBlank() &&
+                !editTxtLectFinDraDC.text.isNullOrBlank()
+            ) {
+                if (editTxtDescGasto.text.isNullOrBlank() && !editTxtTotalGasto.text.isNullOrBlank()) {
+                    // Si la descripción está vacía pero el total gasto está lleno
+                    Toast.makeText(
+                        requireContext(),
+                        "Se requiere el campo Descripción Gasto",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else if (editTxtTotalGasto.text.isNullOrBlank() && !editTxtDescGasto.text.isNullOrBlank()) {
+                    // Si el total gasto está vacío pero la descripción está lleno
+                    Toast.makeText(
+                        requireContext(),
+                        "Se requiere el campo Total Gasto",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    // Ambos campos de descripción y total gasto están llenos o vacíos
+                    showDialogConfirmar(dialog, "¿Estás seguro de que deseas registrar este reporte?") {
+                        generateReport(
+                            editTxtLectFinDraRoj, editTxtLectFinDraChi, editTxtLectFinDraAma,
+                            editTxtLectFinDraDC, editTxtDescGasto, editTxtTotalGasto
+                        )
+                    }
+                }
+            } else {
+                // Al menos uno de los campos de lectura final está vacío
+                Toast.makeText(
+                    requireContext(),
+                    "Todos los campos de lectura final son requeridos",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
-
         dialog.show()
     }
 
@@ -247,6 +290,15 @@ class ReportsFragment : Fragment() {
         }
     }
 
+    //Función para quitar el focus de los editTxt y verificar si son correctos los valores ingresados
+    private fun removeFocusEditTxt(editTxtLectFinDraRoj: EditText, editTxtLectFinDraChi: EditText,
+                                   editTxtLectFinDraAma: EditText, editTxtLectFinDraDC: EditText) {
+        editTxtLectFinDraRoj.clearFocus()
+        editTxtLectFinDraChi.clearFocus()
+        editTxtLectFinDraAma.clearFocus()
+        editTxtLectFinDraDC.clearFocus()
+    }
+
     // Capturar fecha local actual
     private fun captureDateLocateCurrent() : String {
         val calendar = Calendar.getInstance()
@@ -261,15 +313,131 @@ class ReportsFragment : Fragment() {
 
         userViewModel.getLiveDataUser().observe(viewLifecycleOwner) { userModel ->
             this.userModel = userModel
-
         }
     }
 
     // Función para obter lista de coches
     private fun getListCoches() {
+        cochesList = mutableListOf()
         cocheViewModel.getLiveDataCoches().observe(viewLifecycleOwner, Observer {
             cochesList = it
         })
         cocheViewModel.getCoches(requireContext())
+    }
+
+    //Función para enviar reporte para su inserción
+    private fun sendReport(reportModel: ReportModel) {
+        reportViewModel.insertReport(requireContext(), reportModel)
+    }
+
+    private fun controlInputLectFinal(editTxt: EditText, minLect: Int) {
+        editTxt.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                val currentValue = editTxt.text.toString().toIntOrNull() ?: 0
+                if (currentValue < minLect) {
+                    // Si el valor es menor que el mínimo, borrar el texto
+                    editTxt.text.clear()
+                }
+            }
+        }
+    }
+
+    private fun generateReport(editTxtLectFinDraRoj: EditText, editTxtLectFinDraChi: EditText,
+                               editTxtLectFinDraAma: EditText, editTxtLectFinDraDC: EditText,
+                               editTxtDescGasto: EditText, editTxtTotalGasto: EditText) {
+
+        val draRoj = cochesList.getOrNull(0)
+        val draChi = cochesList.getOrNull(1)
+        val draAma = cochesList.getOrNull(2)
+        val draDC = cochesList.getOrNull(3)
+
+        val lectFinDraRoj = editTxtLectFinDraRoj.text.toString().toIntOrNull()
+        val lectFinDraChi = editTxtLectFinDraChi.text.toString().toIntOrNull()
+        val lectFinDraAma = editTxtLectFinDraAma.text.toString().toIntOrNull()
+        val lectFinDraDC = editTxtLectFinDraDC.text.toString().toIntOrNull()
+
+        val difLectDraRoj = lectFinDraRoj?.minus(draRoj?.numVueltas ?: 0) ?: 0
+        val difLectDraChi = lectFinDraChi?.minus(draChi?.numVueltas ?: 0) ?: 0
+        val difLectDraAma = lectFinDraAma?.minus(draAma?.numVueltas ?: 0) ?: 0
+        val difLectDC = lectFinDraDC?.minus(draDC?.numVueltas ?: 0) ?: 0
+
+        val totalVueltasAux = (difLectDraRoj) + (difLectDraChi) + (difLectDraAma) + (difLectDC)
+
+        val detalleReportList = mutableListOf<CocheReportModel>()
+
+        val cocheReportDraRoj = CocheReportModel(draRoj?.idCoche?:0, draRoj?.nameCoche?:"",
+            draRoj?.numVueltas?:0, lectFinDraRoj?:0, difLectDraRoj)
+        val cocheReportDraChi = CocheReportModel(draChi?.idCoche?:0, draChi?.nameCoche?:"",
+            draChi?.numVueltas?:0, lectFinDraChi?:0, difLectDraChi)
+        val cocheReportDraAma = CocheReportModel(draAma?.idCoche?:0, draAma?.nameCoche?:"",
+            draAma?.numVueltas?:0, lectFinDraAma?:0, difLectDraAma)
+        val cocheReportDraDC = CocheReportModel(draDC?.idCoche?:0, draDC?.nameCoche?:"",
+            draDC?.numVueltas?:0, lectFinDraDC?:0, difLectDC)
+
+        detalleReportList.add(cocheReportDraRoj)
+        detalleReportList.add(cocheReportDraChi)
+        detalleReportList.add(cocheReportDraAma)
+        detalleReportList.add(cocheReportDraDC)
+
+        if (editTxtDescGasto.text.isNullOrBlank() && editTxtTotalGasto.text.isNullOrBlank()) {
+
+            val withGasto = false
+            val descripNov = editTxtDescGasto.text.toString()
+            val gastoTotal =  if (editTxtTotalGasto.text.isNotBlank())
+            { BigDecimal(editTxtTotalGasto.text.toString()) } else { BigDecimal.ZERO }
+            val idUserPer = userModel?.idUser
+            val nombUser = userModel?.nombUser
+            val fecha = captureDateLocateCurrent()
+            val totalVueltas = totalVueltasAux
+            val totalVenta = BigDecimal(totalVueltas) - gastoTotal
+            val detalleReport = detalleReportList
+
+            val reportModel = ReportModel(0, fecha, totalVueltas, totalVenta, descripNov,
+                                            gastoTotal, idUserPer?:0, nombUser?:"", detalleReport, withGasto)
+            sendReport(reportModel)
+
+        } else {
+            val withGasto = true
+            val descripNov = editTxtDescGasto.text.toString()
+            val gastoTotal =  if (editTxtTotalGasto.text.isNotBlank())
+            { BigDecimal(editTxtTotalGasto.text.toString()) } else { BigDecimal.ZERO }
+            val idUserPer = userModel?.idUser
+            val nombUser = userModel?.nombUser
+            val fecha = captureDateLocateCurrent()
+            val totalVueltas = totalVueltasAux
+            val totalVenta = BigDecimal(totalVueltas) - gastoTotal
+            val detalleReport = detalleReportList
+
+            val reportModel = ReportModel(0, fecha, totalVueltas, totalVenta, descripNov,
+                gastoTotal, idUserPer?:0, nombUser?:"", detalleReport, withGasto)
+            sendReport(reportModel)
+        }
+    }
+
+    // Función para mostrar el dialog de confirmacion se pasa el mensaje y el metodo a ejecutar
+    private fun showDialogConfirmar(dialogGR: Dialog, msj: String, onAceptarClick: () -> Unit) {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setContentView(R.layout.dialog_confirmar)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val txtMessage : TextView = dialog.findViewById(R.id.txtDialogConfirmar)
+        val btnAceptar : Button = dialog.findViewById(R.id.btnAceptar)
+        val btnCancelar : Button = dialog.findViewById(R.id.btnCancelar)
+
+        txtMessage.text = msj
+
+        btnAceptar.setOnClickListener {
+            onAceptarClick.invoke()
+            dialog.dismiss()
+            dialogGR.dismiss()
+        }
+
+        btnCancelar.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 }

@@ -16,7 +16,16 @@ $stmt = $conexion->prepare($sqlUpdateCoche);
 
 $stmt->bind_param("iisi", $num_charges, $num_change_battery, $condic_coche, $id_coche);
 
-$stmt->execute();
+if ($stmt->execute()) {
+    $response = array('status' => 'success', 'message' => 'Coche actualizado correctamente');
+    http_response_code(200); 
+} else {
+    $response = array('status' => 'error', 'message' => 'Error al actualizar el coche');
+    http_response_code(500); 
+}
+
+echo json_encode($response);
+
 $stmt->close();
 $conexion->close();
 

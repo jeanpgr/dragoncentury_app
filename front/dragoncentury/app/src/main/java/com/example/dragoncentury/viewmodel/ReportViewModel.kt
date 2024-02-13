@@ -23,4 +23,8 @@ class ReportViewModel : ViewModel() {
     fun getLiveDataReports(): MutableLiveData<List<ReportModel>> {
         return reportModel
     }
+
+    fun insertReport(context: Context, reportModel: ReportModel) {
+        ReportVolley.insertReport(context, reportModel)
+    }
 }

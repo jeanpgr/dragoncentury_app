@@ -20,4 +20,14 @@ class UserViewModel : ViewModel() {
     fun getLiveDataUser(): LiveData<UserModel?> {
         return userModel
     }
+
+    fun getUserLogin(context: Context,  nickUser: String, passwUser: String) {
+        UserVolley.logear(context, nickUser, passwUser) {user ->
+            userModel.postValue(user)
+        }
+    }
+
+    fun getLiveDataUserLogin(): LiveData<UserModel?> {
+        return userModel
+    }
 }

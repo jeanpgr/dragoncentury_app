@@ -12,6 +12,16 @@ $json_data = file_get_contents('php://input');
 // Decodifica el JSON a un array asociativo
 $data = json_decode($json_data, true);
 
+// Manejo de errores
+$response = array();
+
+if ($data === null) {
+    $response['success'] = false;
+    $response['message'] = "No se recibió ningún dato JSON válido.";
+    echo json_encode($response);
+    exit();
+}
+
 $withGasto = isset($data['with_gasto']) ? $data['with_gasto'] : '';
 $descrip_nov = isset($data['descrip_nov']) ? $data['descrip_nov'] : '';
 $gasto_total = isset($data['gasto_total']) ? $data['gasto_total'] : '';
@@ -23,7 +33,7 @@ $total_venta = isset($data['total_venta']) ? $data['total_venta'] : '';
 
 $detalle_reporte = isset($data['detalle_reporte']) ? $data['detalle_reporte'] : '';
 
-if ($withGasto == "true") {
+if ($withGasto == true) {
     $sqlMaxIdGasto = "SELECT MAX(id_nov_gasto) AS max_id_gasto FROM novedades_gastos";
     $resultMaxIdGasto = $conexion->query($sqlMaxIdGasto);
     $fila = $resultMaxIdGasto->fetch_assoc();
@@ -46,12 +56,21 @@ if ($withGasto == "true") {
                         fecha, total_vueltas, total_venta) VALUES (?, ?, ?, ?, ?, ?)";
     $stmtIR = $conexion->prepare($sqlInsertReport);
     $stmtIR->bind_param("iiisid", $next_id_report, $next_id_gasto, $id_user_per, $fecha, $total_vueltas, $total_venta);
-    $stmtIR->execute();
+    if ($stmtIR->execute()) {
+        $response = array('status' => 'success', 'message' => '¡Reporte registrado con éxito!');
+        http_response_code(200); // OK
+    } else {
+        $response = array('status' => 'error', 'message' => 'Error al registrar reporte');
+        http_response_code(500); // Internal Server Error
+    }
     $stmtIR->close();
 
     $sqlInsertDetalle = "INSERT INTO detalle_vuelta (id_reporte_per, id_coche_per, lectura_inicial, lectura_final, num_vueltas)
                             VALUES (?, ?, ?, ?, ?)";
     $stmtID = $conexion->prepare($sqlInsertDetalle);
+
+    $sqlUpdateCoche = "UPDATE coches SET total_vueltas=? WHERE id_coche=?";
+    $stmtUC = $conexion->prepare($sqlUpdateCoche);
 
     foreach ($detalle_reporte as $dr) {
 
@@ -61,11 +80,15 @@ if ($withGasto == "true") {
         $num_vueltas = $dr['num_vueltas'];
 
         $stmtID->bind_param("iiiii", $next_id_report, $id_coche_per, $lectura_inicial, $lectura_final, $num_vueltas);
-
         $stmtID->execute();
-    }
 
+        $stmtUC->bind_param("ii", $lectura_final, $id_coche_per);
+        $stmtUC->execute();
+    }
+    
+    echo json_encode($response);
     $stmtID->close();
+    $stmtUC->close();
 
 } else {
 
@@ -81,12 +104,24 @@ if ($withGasto == "true") {
                         fecha, total_vueltas, total_venta) VALUES (?, ?, ?, ?, ?, ?)";
     $stmtIR = $conexion->prepare($sqlInsertReport);
     $stmtIR->bind_param("iiisid", $next_id_report, $id_nov_gasto_per, $id_user_per, $fecha, $total_vueltas, $total_venta);
-    $stmtIR->execute();
+
+    if ($stmtIR->execute()) {
+        $response = array('status' => 'success', 'message' => '¡Reporte registrado con éxito!');
+        http_response_code(200); // OK
+    } else {
+        $response = array('status' => 'error', 'message' => 'Error al registrar reporte');
+        http_response_code(500); // Internal Server Error
+    }
+
     $stmtIR->close();
 
     $sqlInsertDetalle = "INSERT INTO detalle_vuelta (id_reporte_per, id_coche_per, lectura_inicial, lectura_final, num_vueltas)
                             VALUES (?, ?, ?, ?, ?)";
     $stmtID = $conexion->prepare($sqlInsertDetalle);
+    
+    //Actualiza la tabla coches con las lecturas finales
+    $sqlUpdateCoche = "UPDATE coches SET total_vueltas=? WHERE id_coche=?";
+    $stmtUC = $conexion->prepare($sqlUpdateCoche);
 
     foreach ($detalle_reporte as $dr) {
 
@@ -96,11 +131,16 @@ if ($withGasto == "true") {
         $num_vueltas = $dr['num_vueltas'];
 
         $stmtID->bind_param("iiiii", $next_id_report, $id_coche_per, $lectura_inicial, $lectura_final, $num_vueltas);
-
         $stmtID->execute();
+
+        $stmtUC->bind_param("ii", $lectura_final, $id_coche_per);
+        $stmtUC->execute();
     }
 
-    $stmtID->close();   
+    echo json_encode($response);
+    $stmtID->close();
+    $stmtUC->close();
+    
 }
 
 $conexion->close();
