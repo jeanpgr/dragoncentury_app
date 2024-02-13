@@ -3,19 +3,18 @@ package com.example.dragoncentury.views
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
+import androidx.lifecycle.Observer
 import com.example.dragoncentury.databinding.ActivityLoginBinding
-import com.example.dragoncentury.services.ApiUrlManager
-import org.json.JSONException
-import org.json.JSONObject
+import com.example.dragoncentury.models.UserModel
+import com.example.dragoncentury.viewmodel.UserViewModel
 
 class LoginActivity : AppCompatActivity() {
 
-    private val apiServices = ApiUrlManager
+    private val userViewModel: UserViewModel by viewModels()
     private lateinit var binding: ActivityLoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,43 +37,33 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
+    private fun getUserLogin(nickUser: String, passwUser: String): UserModel? {
+        var userModel : UserModel? = null
+        userViewModel.getUserLogin(this, nickUser, passwUser)
+
+        userViewModel.getLiveDataUserLogin().observe(this, Observer { user ->
+            userModel = user
+        })
+        return userModel
+    }
+
     private fun logear(nickUser: String, passwUser: String) {
 
-        val url = apiServices.getUrlLogin()
+        val user = getUserLogin(nickUser, passwUser)
+        if (user != null) {
+            val sharedPref = getSharedPreferences("login_data", MODE_PRIVATE)
+            val editor = sharedPref.edit()
+            editor.putInt("id_user", user.idUser)
+            editor.putString("nomb_user", user.nombUser)
+            editor.putString("apell_user", user.apellUser)
+            editor.putString("rol_user", user.rolUser)
 
-        val queue = Volley.newRequestQueue(this)
-        val stringRequest = object : StringRequest(Method.POST, url,
-            Response.Listener { response ->
-                try {
-                    val jsonObject = JSONObject(response)
-                    if (jsonObject.length() > 0) {
-                        val idUser = jsonObject.getString("id_user")
-
-                        Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                        // Procesa la respuesta del servidor
-                        val sharedPref = getSharedPreferences("login_data", MODE_PRIVATE)
-                        val editor = sharedPref.edit()
-                        editor.putString("id_user", idUser)
-                        editor.apply()
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                    Toast.makeText(this, "Credenciales Incorrectas", Toast.LENGTH_SHORT).show()
-                }
-            },
-            Response.ErrorListener { error ->
-                Toast.makeText(this, "Error en la petición: ${error.message}", Toast.LENGTH_SHORT)
-                    .show()
-            }) {
-            override fun getParams(): Map<String, String> {
-                val params = HashMap<String, String>()
-                params["nick_user"] = nickUser
-                params["passw_user"] = passwUser
-                return params
-            }
+            editor.apply()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            Toast.makeText(this, "Bienvenido ${user.nombUser} ${user.apellUser}", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(this, "Credenciales Incorrectas", Toast.LENGTH_SHORT).show()
         }
-        queue.add(stringRequest)
     }
 }

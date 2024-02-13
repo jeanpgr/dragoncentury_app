@@ -9,6 +9,8 @@ data class ReportModel(
     val totalVenta: BigDecimal,
     val descripNov: String,
     val gastoTotal: BigDecimal,
+    val idUserPer: Int,
     val nombsUser: String,
-    val coches: List<CocheReportModel>
+    val detalleCoches: List<CocheReportModel>,
+    val withGasto: Boolean
 )
