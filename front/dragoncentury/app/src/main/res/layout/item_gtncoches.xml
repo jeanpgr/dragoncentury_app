@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="150sp"
     app:cardCornerRadius="15dp"
@@ -12,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_3ro">
+        android:background="@color/color_4to">
 
         <ImageView
             android:id="@+id/imgViewCoche"
@@ -32,19 +33,33 @@
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
             android:text="TextView"
-            android:textColor="@color/color_1ro"
+            android:textColor="@color/white"
             android:textSize="28sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txtColor"
+            android:id="@+id/txtNumVuelt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="7dp"
+            android:text="TextView"
+            android:textColor="@color/color_6to"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/txtlblVuelt"
+            app:layout_constraintTop_toBottomOf="@+id/txtNameCoche"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/txtlblVuelt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginTop="7dp"
-            android:text="TextView"
+            android:text="@string/str_lbl_vueltas"
             android:textColor="@color/color_6to"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -55,14 +70,29 @@
             android:id="@+id/txtNumCargas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="5dp"
             android:text="TextView"
             android:textColor="@color/color_6to"
             android:textSize="20sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/txtlblNumCar"
+            app:layout_constraintStart_toEndOf="@+id/txtlblNumCar"
+            app:layout_constraintTop_toBottomOf="@+id/txtNumVuelt"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/txtlblNumCar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/str_lbl_cargas"
+            android:textColor="@color/color_6to"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
-            app:layout_constraintTop_toBottomOf="@+id/txtColor" />
+            app:layout_constraintTop_toBottomOf="@+id/txtlblVuelt" />
 
 
         <TextView
@@ -78,7 +108,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgViewCoche"
-            app:layout_constraintTop_toBottomOf="@+id/txtNumCargas" />
+            app:layout_constraintTop_toBottomOf="@+id/txtlblNumCar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

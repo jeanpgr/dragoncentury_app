@@ -3,10 +3,12 @@ package com.example.dragoncentury.views
 import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.text.InputFilter
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +18,13 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,18 +32,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.dragoncentury.R
 import com.example.dragoncentury.adapters.ReportAdapter
 import com.example.dragoncentury.customcomponents.DatePickerFragment
+import com.example.dragoncentury.customcomponents.ReportPDFGenerator
 import com.example.dragoncentury.models.CocheModel
 import com.example.dragoncentury.models.CocheReportModel
 import com.example.dragoncentury.models.ReportModel
 import com.example.dragoncentury.models.UserModel
 import com.example.dragoncentury.viewmodel.CocheViewModel
 import com.example.dragoncentury.viewmodel.ReportViewModel
-import com.example.dragoncentury.viewmodel.UserViewModel
+import com.google.android.material.snackbar.Snackbar
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import kotlin.math.min
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -73,9 +80,8 @@ class ReportsFragment : Fragment() {
 
     private lateinit var rvReports : RecyclerView
     private var reportsList : List<ReportModel> = listOf()
-    private var cochesList: List<CocheModel> = listOf()
+    private var cochesList: MutableList<CocheModel> = mutableListOf()
     private val reportViewModel : ReportViewModel by viewModels()
-    private val userViewModel: UserViewModel by viewModels()
     private val cocheViewModel : CocheViewModel by viewModels()
 
     private lateinit var sharedPref: SharedPreferences
@@ -88,15 +94,21 @@ class ReportsFragment : Fragment() {
     private lateinit var btnCleanFilter: Button
     private lateinit var txtFechaActual: TextView
 
+    private var cochesCargados = false
+    private var dialogoMostrado = false
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        isAceptado ->
+        if (isAceptado) Toast.makeText(requireContext(), "PERMISOS CONCEDIDOS", Toast.LENGTH_SHORT).show()
+        else Toast.makeText(requireContext(), "PERMISOS DENEGADOS", Toast.LENGTH_SHORT).show()
+    }
+
+    private lateinit var progressBar: ProgressBar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        sharedPref = requireContext().getSharedPreferences("login_data", Context.MODE_PRIVATE)
-        val idUser = sharedPref.getInt("id_user", 0)
-
-        getUser(idUser)
-        getListCoches()
 
         editTxtDateDesde = view.findViewById(R.id.editTxtDateDesde)
         editTxtDateHasta = view.findViewById(R.id.editTxtDateHasta)
@@ -104,8 +116,13 @@ class ReportsFragment : Fragment() {
         btnBuscarReport = view.findViewById(R.id.btnBuscarReporte)
         btnCleanFilter = view.findViewById(R.id.btnCleanFilter)
         txtFechaActual = view.findViewById(R.id.txtFechaActual)
+        progressBar = view.findViewById(R.id.progressBar)
+
+        hideProgressDialog()
+        getUser()
 
         txtFechaActual.text = captureDateLocateCurrent()
+
 
         editTxtDateDesde.setOnClickListener{
             showDatePickerDialog(editTxtDateDesde)
@@ -116,7 +133,16 @@ class ReportsFragment : Fragment() {
         }
 
         btnGenerateReport.setOnClickListener {
-            showDialogGenerateReport()
+            getListCoches()
+            if (cochesCargados) {
+                showDialogGenerateReport()
+            } else {
+                showProgressDialog()
+                btnGenerateReport.isEnabled = false
+                Handler(Looper.getMainLooper()).postDelayed({
+                    btnGenerateReport.isEnabled = true
+                }, 2000)
+            }
         }
 
         btnBuscarReport.setOnClickListener {
@@ -132,6 +158,33 @@ class ReportsFragment : Fragment() {
                 rvReports.adapter = null
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+        }
+    }
+
+    //Función para verificar permisos para generar PDFs
+    private fun verificarPermisos(view: View, reportModel: ReportModel) {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                Toast.makeText(requireContext(), "PERMISOS CONCEDIDOS", Toast.LENGTH_SHORT).show()
+                ReportPDFGenerator.generatePDF(requireContext(), reportModel, "Reporte")
+            }
+
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) -> {
+                Snackbar.make(view, "Permisos necesarios para crear archivos PDFs", Snackbar.LENGTH_INDEFINITE).setAction(
+                    "Aceptar"
+                ) {
+                    requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                }.show()
+            }
+            else -> {
+                requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }
     }
@@ -161,7 +214,7 @@ class ReportsFragment : Fragment() {
     private fun showFiltersReports(view: View) {
         rvReports = view.findViewById(R.id.rvReportes)
         rvReports.layoutManager = LinearLayoutManager(context)
-        rvReports.adapter = ReportAdapter(reportsList)
+        rvReports.adapter = ReportAdapter(reportsList) { verificarPermisos(view, it) }
     }
 
     //función para comprobar campos nulos y llamar al metodo obtner filtro de reportes
@@ -175,105 +228,105 @@ class ReportsFragment : Fragment() {
 
     // Funcion para mostrar el dialog de generar reporte
     private fun showDialogGenerateReport() {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
-        dialog.setCanceledOnTouchOutside(true)
-        dialog.setContentView(R.layout.dialog_generate_report)
-        val window = dialog.window
-        window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            val dialog = Dialog(requireContext())
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(false)
+            dialog.setCanceledOnTouchOutside(true)
+            dialog.setContentView(R.layout.dialog_generate_report)
+            val window = dialog.window
+            window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        val btnGenerateReport : Button = dialog.findViewById(R.id.btnGenerateReport)
+            val btnGenerateReport : Button = dialog.findViewById(R.id.btnGenerateReport)
 
-        val txtNameUser : TextView = dialog.findViewById(R.id.txtNameUser)
-        txtNameUser.text = "${userModel?.nombUser} ${userModel?.apellUser}"
+            val txtNameUser : TextView = dialog.findViewById(R.id.txtNameUser)
+            txtNameUser.text = "${userModel?.nombUser} ${userModel?.apellUser}"
 
-        val txtFechaActualGR : TextView = dialog.findViewById(R.id.txtFechaActualGR)
-        txtFechaActualGR.text = captureDateLocateCurrent()
+            val txtFechaActualGR : TextView = dialog.findViewById(R.id.txtFechaActualGR)
+            txtFechaActualGR.text = captureDateLocateCurrent()
 
-        val txtDraRoj : TextView = dialog.findViewById(R.id.txtDraRoj)
-        txtDraRoj.text = cochesList.getOrNull(0)?.nameCoche.toString()
-        val txtDraChi : TextView = dialog.findViewById(R.id.txtDraChi)
-        txtDraChi. text = cochesList.getOrNull(1)?.nameCoche.toString()
-        val txtDraAma : TextView = dialog.findViewById(R.id.txtDraAma)
-        txtDraAma.text = cochesList.getOrNull(2)?.nameCoche.toString()
-        val txtDraDC : TextView = dialog.findViewById(R.id.txtDraDC)
-        txtDraDC.text = cochesList.getOrNull(3)?.nameCoche.toString()
+            val txtDraRoj : TextView = dialog.findViewById(R.id.txtDraRoj)
+            txtDraRoj.text = cochesList.getOrNull(0)?.nameCoche.toString()
+            val txtDraChi : TextView = dialog.findViewById(R.id.txtDraChi)
+            txtDraChi. text = cochesList.getOrNull(1)?.nameCoche.toString()
+            val txtDraAma : TextView = dialog.findViewById(R.id.txtDraAma)
+            txtDraAma.text = cochesList.getOrNull(2)?.nameCoche.toString()
+            val txtDraDC : TextView = dialog.findViewById(R.id.txtDraDC)
+            txtDraDC.text = cochesList.getOrNull(3)?.nameCoche.toString()
 
-        val txtLectIniDraRoj : TextView = dialog.findViewById(R.id.txtLectIniDraRoj)
-        txtLectIniDraRoj.text = cochesList.getOrNull(0)?.numVueltas.toString()
-        val txtLectIniDraChi : TextView = dialog.findViewById(R.id.txtLectIniDraChi)
-        txtLectIniDraChi.text = cochesList.getOrNull(1)?.numVueltas.toString()
-        val txtLectIniDraAma : TextView = dialog.findViewById(R.id.txtLectIniDraAma)
-        txtLectIniDraAma.text = cochesList.getOrNull(2)?.numVueltas.toString()
-        val txtLectIniDraDC : TextView = dialog.findViewById(R.id.txtLectIniDraDC)
-        txtLectIniDraDC.text = cochesList.getOrNull(3)?.numVueltas.toString()
+            val txtLectIniDraRoj : TextView = dialog.findViewById(R.id.txtLectIniDraRoj)
+            txtLectIniDraRoj.text = cochesList.getOrNull(0)?.numVueltas.toString()
+            val txtLectIniDraChi : TextView = dialog.findViewById(R.id.txtLectIniDraChi)
+            txtLectIniDraChi.text = cochesList.getOrNull(1)?.numVueltas.toString()
+            val txtLectIniDraAma : TextView = dialog.findViewById(R.id.txtLectIniDraAma)
+            txtLectIniDraAma.text = cochesList.getOrNull(2)?.numVueltas.toString()
+            val txtLectIniDraDC : TextView = dialog.findViewById(R.id.txtLectIniDraDC)
+            txtLectIniDraDC.text = cochesList.getOrNull(3)?.numVueltas.toString()
 
-        val editTxtLectFinDraRoj : EditText = dialog.findViewById(R.id.editTxtLectFinDraRoj)
-        val editTxtLectFinDraAma : EditText = dialog.findViewById(R.id.editTxtLectFinDraAma)
-        val editTxtLectFinDraChi : EditText = dialog.findViewById(R.id.editTxtLectFinDraChi)
-        val editTxtLectFinDraDC : EditText = dialog.findViewById(R.id.editTxtLectFinDraDC)
+            val editTxtLectFinDraRoj : EditText = dialog.findViewById(R.id.editTxtLectFinDraRoj)
+            val editTxtLectFinDraAma : EditText = dialog.findViewById(R.id.editTxtLectFinDraAma)
+            val editTxtLectFinDraChi : EditText = dialog.findViewById(R.id.editTxtLectFinDraChi)
+            val editTxtLectFinDraDC : EditText = dialog.findViewById(R.id.editTxtLectFinDraDC)
 
-        //Control de valores de lectura (Lectura final no sea menor a Lectura Inicial)
-        cochesList.getOrNull(0)?.let { controlInputLectFinal(editTxtLectFinDraRoj, it.numVueltas) }
-        cochesList.getOrNull(1)?.let { controlInputLectFinal(editTxtLectFinDraChi, it.numVueltas) }
-        cochesList.getOrNull(2)?.let { controlInputLectFinal(editTxtLectFinDraAma, it.numVueltas) }
-        cochesList.getOrNull(3)?.let { controlInputLectFinal(editTxtLectFinDraDC, it.numVueltas) }
+            //Control de valores de lectura (Lectura final no sea menor a Lectura Inicial)
+            cochesList.getOrNull(0)?.let { controlInputLectFinal(editTxtLectFinDraRoj, it.numVueltas) }
+            cochesList.getOrNull(1)?.let { controlInputLectFinal(editTxtLectFinDraChi, it.numVueltas) }
+            cochesList.getOrNull(2)?.let { controlInputLectFinal(editTxtLectFinDraAma, it.numVueltas) }
+            cochesList.getOrNull(3)?.let { controlInputLectFinal(editTxtLectFinDraDC, it.numVueltas) }
 
-        val editTxtDescGasto: EditText = dialog.findViewById(R.id.editTxtDescrGasto)
-        val editTxtTotalGasto: EditText = dialog.findViewById(R.id.editTxtTotalGasto)
+            val editTxtDescGasto: EditText = dialog.findViewById(R.id.editTxtDescrGasto)
+            val editTxtTotalGasto: EditText = dialog.findViewById(R.id.editTxtTotalGasto)
 
-        val btnAddGastos : Button = dialog.findViewById(R.id.btnAddGastos)
-        val linLayt: LinearLayout = dialog.findViewById(R.id.linLaytGastos)
+            val btnAddGastos : Button = dialog.findViewById(R.id.btnAddGastos)
+            val linearLayoutGastos: LinearLayout = dialog.findViewById(R.id.linLaytGastos)
 
-        linLayt.visibility = View.GONE
+            linearLayoutGastos.visibility = View.GONE
 
-        btnAddGastos.setOnClickListener {
-            toggleLinearLayout(linLayt, btnAddGastos, editTxtDescGasto, editTxtTotalGasto)
-        }
-
-        btnGenerateReport.setOnClickListener {
-            removeFocusEditTxt(editTxtLectFinDraRoj,editTxtLectFinDraChi, editTxtLectFinDraAma, editTxtLectFinDraDC)
-
-            if (!editTxtLectFinDraRoj.text.isNullOrBlank() &&
-                !editTxtLectFinDraChi.text.isNullOrBlank() &&
-                !editTxtLectFinDraAma.text.isNullOrBlank() &&
-                !editTxtLectFinDraDC.text.isNullOrBlank()
-            ) {
-                if (editTxtDescGasto.text.isNullOrBlank() && !editTxtTotalGasto.text.isNullOrBlank()) {
-                    // Si la descripción está vacía pero el total gasto está lleno
-                    Toast.makeText(
-                        requireContext(),
-                        "Se requiere el campo Descripción Gasto",
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else if (editTxtTotalGasto.text.isNullOrBlank() && !editTxtDescGasto.text.isNullOrBlank()) {
-                    // Si el total gasto está vacío pero la descripción está lleno
-                    Toast.makeText(
-                        requireContext(),
-                        "Se requiere el campo Total Gasto",
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    // Ambos campos de descripción y total gasto están llenos o vacíos
-                    showDialogConfirmar(dialog, "¿Estás seguro de que deseas registrar este reporte?") {
-                        generateReport(
-                            editTxtLectFinDraRoj, editTxtLectFinDraChi, editTxtLectFinDraAma,
-                            editTxtLectFinDraDC, editTxtDescGasto, editTxtTotalGasto
-                        )
-                    }
-                }
-            } else {
-                // Al menos uno de los campos de lectura final está vacío
-                Toast.makeText(
-                    requireContext(),
-                    "Todos los campos de lectura final son requeridos",
-                    Toast.LENGTH_LONG
-                ).show()
+            btnAddGastos.setOnClickListener {
+                toggleLinearLayout(linearLayoutGastos, btnAddGastos, editTxtDescGasto, editTxtTotalGasto)
             }
-        }
-        dialog.show()
+
+            btnGenerateReport.setOnClickListener {
+                removeFocusEditTxt(editTxtLectFinDraRoj,editTxtLectFinDraChi, editTxtLectFinDraAma, editTxtLectFinDraDC)
+
+                if (!editTxtLectFinDraRoj.text.isNullOrBlank() &&
+                    !editTxtLectFinDraChi.text.isNullOrBlank() &&
+                    !editTxtLectFinDraAma.text.isNullOrBlank() &&
+                    !editTxtLectFinDraDC.text.isNullOrBlank()
+                ) {
+                    if (editTxtDescGasto.text.isNullOrBlank() && !editTxtTotalGasto.text.isNullOrBlank()) {
+                        // Si la descripción está vacía pero el total gasto está lleno
+                        Toast.makeText(
+                            requireContext(),
+                            "Se requiere el campo Descripción Gasto",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else if (editTxtTotalGasto.text.isNullOrBlank() && !editTxtDescGasto.text.isNullOrBlank()) {
+                        // Si el total gasto está vacío pero la descripción está lleno
+                        Toast.makeText(
+                            requireContext(),
+                            "Se requiere el campo Total Gasto",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        // Ambos campos de descripción y total gasto están llenos o vacíos
+                        showDialogConfirmar(dialog, "¿Estás seguro de que deseas registrar este reporte?") {
+                            generateReport(
+                                editTxtLectFinDraRoj, editTxtLectFinDraChi, editTxtLectFinDraAma,
+                                editTxtLectFinDraDC, editTxtDescGasto, editTxtTotalGasto
+                            )
+                        }
+                    }
+                } else {
+                    // Al menos uno de los campos de lectura final está vacío
+                    Toast.makeText(
+                        requireContext(),
+                        "Todos los campos de lectura final son requeridos",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+            dialog.show()
     }
 
     // Funcion para desplegar y contraer gastos, si se contrae se limpia los campos y cambio te texto el boton de agregar a quitar
@@ -307,20 +360,29 @@ class ReportsFragment : Fragment() {
         return dateWithFormat
     }
 
-    // Función para recuperar el usuario logeado enviando su id
-    private fun getUser(idUser: Int) {
-        userViewModel.getUser(requireContext(), idUser)
-
-        userViewModel.getLiveDataUser().observe(viewLifecycleOwner) { userModel ->
-            this.userModel = userModel
-        }
+    // Función para recuperar el usuario logeado
+    private fun getUser() {
+        sharedPref = requireContext().getSharedPreferences("login_data", Context.MODE_PRIVATE)
+        val idUser = sharedPref.getInt("id_user", 0)
+        val nombUser = sharedPref.getString("nomb_user", "").toString()
+        val apellUser = sharedPref.getString("apell_user", "").toString()
+        val rolUser = sharedPref.getString("rol_user", "").toString()
+        userModel = UserModel(idUser, nombUser, apellUser, rolUser)
     }
 
     // Función para obter lista de coches
     private fun getListCoches() {
-        cochesList = mutableListOf()
-        cocheViewModel.getLiveDataCoches().observe(viewLifecycleOwner, Observer {
-            cochesList = it
+        cochesCargados = false
+        cocheViewModel.getLiveDataCoches().observe(viewLifecycleOwner, Observer { coches ->
+            cochesList.clear() // Vaciar la lista antes de agregar nuevos coches
+            cochesList.addAll(coches) // Agregar los nuevos coches a la lista
+            cochesCargados = true
+            // Verificar si el botón de generar reporte está visible y los coches están cargados
+            if (!dialogoMostrado && cochesCargados) {
+                showDialogGenerateReport()
+                hideProgressDialog()
+                dialogoMostrado = true
+            }
         })
         cocheViewModel.getCoches(requireContext())
     }
@@ -439,5 +501,13 @@ class ReportsFragment : Fragment() {
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+    private fun showProgressDialog() {
+        progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressDialog() {
+        progressBar.visibility = View.GONE
     }
 }

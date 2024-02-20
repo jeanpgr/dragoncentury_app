@@ -34,7 +34,7 @@
                 android:layout_weight="1"
                 android:layout_marginEnd="25sp"
                 android:layout_marginTop="20sp"
-                android:layout_marginStart="50sp"
+                android:layout_marginStart="30sp"
                 android:text="@string/str_btn_generar"
                 android:background="@drawable/custom_btn"/>
         </LinearLayout>
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:layout_marginTop="10sp"
-                android:layout_marginStart="160sp"
+                android:layout_marginStart="170sp"
                 android:textSize="20sp"
                 android:text="@string/str_lbl_lectinicial"
                 android:textColor="@color/color_6to"/>
@@ -99,7 +99,7 @@
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:layout_marginTop="10sp"
-                android:layout_marginStart="35sp"
+                android:layout_marginStart="50sp"
                 android:textSize="20sp"
                 android:text="LectIni"
                 android:textColor="@color/color_6to"/>
@@ -141,7 +141,7 @@
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:layout_marginTop="10sp"
-                android:layout_marginStart="35sp"
+                android:layout_marginStart="50sp"
                 android:textSize="20sp"
                 android:text="LectIni"
                 android:textColor="@color/color_6to"/>
@@ -183,7 +183,7 @@
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:layout_marginTop="10sp"
-                android:layout_marginStart="35sp"
+                android:layout_marginStart="50sp"
                 android:textSize="20sp"
                 android:text="LectIni"
                 android:textColor="@color/color_6to"/>
@@ -225,7 +225,7 @@
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:layout_marginTop="10sp"
-                android:layout_marginStart="35sp"
+                android:layout_marginStart="50sp"
                 android:textSize="20sp"
                 android:text="LectIni"
                 android:textColor="@color/color_6to"/>
@@ -305,9 +305,6 @@
                     android:background="@drawable/custom_edit_txt"/>
 
             </LinearLayout>
-
         </LinearLayout>
-
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>

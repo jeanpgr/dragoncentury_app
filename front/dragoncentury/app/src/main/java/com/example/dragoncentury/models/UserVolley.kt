@@ -15,46 +15,6 @@ class UserVolley {
 
         private val apiServices = ApiUrlManager
 
-        fun getUser(context: Context, idUser: Int, callback: (UserModel?) -> Unit) {
-            val queue = Volley.newRequestQueue(context)
-            val url = apiServices.getUrlGetUser()
-
-            val stringRequest = object : StringRequest(
-                Method.POST, url,
-                Response.Listener { response ->
-                    val user = parseJson(response)
-                    callback(user)
-                }, Response.ErrorListener { error ->
-                    Toast.makeText(context, "Error del servidor: ${error.message}", Toast.LENGTH_SHORT).show()
-                }
-            ) {
-                override fun getParams(): Map<String, String>? {
-                    val params = HashMap<String, String>()
-                    params["id_user"] = idUser.toString()
-
-                    return params
-                }
-            }
-            queue.add(stringRequest)
-        }
-
-        private fun parseJson(json: String): UserModel? {
-            var userModel: UserModel? = null
-            try {
-                val jsonObject = JSONObject(json)
-                val idUser = jsonObject.getInt("id_user")
-                val nombUser = jsonObject.getString("nomb_user")
-                val apellUser = jsonObject.getString("apell_user")
-                val rolUser = jsonObject.getString("rol_user")
-
-                // Inicializa un nuevo objeto UserModel con los datos obtenidos del JSON
-                userModel = UserModel(idUser, nombUser, apellUser, rolUser)
-            } catch (e: JSONException) {
-                println("Error al analizar el JSON: ${e.message}")
-            }
-            return userModel
-        }
-
         fun logear(context: Context, nickUser: String, passwUser: String,
                            callback: (UserModel?) -> Unit) {
 
@@ -79,6 +39,23 @@ class UserVolley {
                 }
             }
             queue.add(stringRequest)
+        }
+
+        private fun parseJson(json: String): UserModel? {
+            var userModel: UserModel? = null
+            try {
+                val jsonObject = JSONObject(json)
+                val idUser = jsonObject.getInt("id_user")
+                val nombUser = jsonObject.getString("nomb_user")
+                val apellUser = jsonObject.getString("apell_user")
+                val rolUser = jsonObject.getString("rol_user")
+
+                // Inicializa un nuevo objeto UserModel con los datos obtenidos del JSON
+                userModel = UserModel(idUser, nombUser, apellUser, rolUser)
+            } catch (e: JSONException) {
+                println("Error al analizar el JSON: ${e.message}")
+            }
+            return userModel
         }
     }
 }

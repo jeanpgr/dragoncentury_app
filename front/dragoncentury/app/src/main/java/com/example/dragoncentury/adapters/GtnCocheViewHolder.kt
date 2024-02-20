@@ -16,7 +16,7 @@ class GtnCocheViewHolder(view:View) : RecyclerView.ViewHolder(view) {
     fun render(cocheModel: CocheModel, onClickListener: (CocheModel) -> Unit) {
         loadImgCoche(cocheModel)
         binding.txtNameCoche.text = cocheModel.nameCoche
-        binding.txtColor.text = cocheModel.colorCoche
+        binding.txtNumVuelt.text = cocheModel.numVueltas.toString()
         binding.txtNumCargas.text = cocheModel.numCargasCoche.toString()
         binding.txtCondicion.text = cocheModel.condicionCoche
 

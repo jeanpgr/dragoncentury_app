@@ -35,6 +35,13 @@
             android:layout_marginBottom="1dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             tools:listitem="@layout/item_gtncoches"/>
+
+        <ProgressBar
+            android:id="@+id/progressBarGC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:visibility="gone" />
     </LinearLayout>
 
 </FrameLayout>
