@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -65,8 +66,14 @@ class CastleFragment : Fragment() {
     private lateinit var rvGtnCoches: RecyclerView
     private var gtnCochesList: List<CocheModel> = listOf()
     private val cocheViewModel : CocheViewModel by viewModels()
+    private lateinit var progressBarDC: ProgressBar
+    private var cochesCargados = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        progressBarDC = view.findViewById(R.id.progressBarGC)
+
         getListCoches(view)
     }
 
@@ -84,9 +91,16 @@ class CastleFragment : Fragment() {
 
     //Trae la lista de objetos(coches) del ViewModel con LiveData - Observer
     private fun getListCoches(view: View) {
+        showProgressDialog()
         cocheViewModel.getLiveDataCoches().observe(viewLifecycleOwner, Observer {
             gtnCochesList = it
-            initDataInRecycleView(view)
+            cochesCargados = true
+            if (cochesCargados) {
+                hideProgressDialog()
+                initDataInRecycleView(view)
+            } else {
+                showProgressDialog()
+            }
         })
         cocheViewModel.getCoches(requireContext())
     }
@@ -294,5 +308,13 @@ class CastleFragment : Fragment() {
 
         cocheModel.numCambBat = newNumCambBat
         updateCoche(cocheModel)
+    }
+
+    private fun showProgressDialog() {
+        progressBarDC.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressDialog() {
+        progressBarDC.visibility = View.GONE
     }
 }

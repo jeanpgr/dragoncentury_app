@@ -11,16 +11,6 @@ class UserViewModel : ViewModel() {
 
     private val userModel = MutableLiveData<UserModel?>()
 
-    fun getUser(context: Context, idUser: Int) {
-        UserVolley.getUser(context, idUser) { user ->
-            userModel.postValue(user)
-        }
-    }
-
-    fun getLiveDataUser(): LiveData<UserModel?> {
-        return userModel
-    }
-
     fun getUserLogin(context: Context,  nickUser: String, passwUser: String) {
         UserVolley.logear(context, nickUser, passwUser) {user ->
             userModel.postValue(user)

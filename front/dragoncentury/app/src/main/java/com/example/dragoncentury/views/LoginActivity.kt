@@ -3,7 +3,6 @@ package com.example.dragoncentury.views
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +20,8 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        comprobarInicioSesion()
+
         binding.btnLogIn.setOnClickListener{
             val nickUser = binding.editTxtUserName.text.toString()
             val passUser = binding.editTxtPassword.text.toString()
@@ -36,34 +37,45 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-
-    private fun getUserLogin(nickUser: String, passwUser: String): UserModel? {
-        var userModel : UserModel? = null
+    private fun getUserLogin(nickUser: String, passwUser: String, callback: (UserModel?) -> Unit) {
         userViewModel.getUserLogin(this, nickUser, passwUser)
 
         userViewModel.getLiveDataUserLogin().observe(this, Observer { user ->
-            userModel = user
+            callback(user)
         })
-        return userModel
     }
 
     private fun logear(nickUser: String, passwUser: String) {
+        getUserLogin(nickUser, passwUser) { user ->
+            if (user != null) {
+                guardarInicioSesion(user)
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                Toast.makeText(this, "Bienvenido ${user.nombUser} ${user.apellUser}", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Credenciales Incorrectas", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
-        val user = getUserLogin(nickUser, passwUser)
-        if (user != null) {
-            val sharedPref = getSharedPreferences("login_data", MODE_PRIVATE)
-            val editor = sharedPref.edit()
-            editor.putInt("id_user", user.idUser)
-            editor.putString("nomb_user", user.nombUser)
-            editor.putString("apell_user", user.apellUser)
-            editor.putString("rol_user", user.rolUser)
+    // Método para guardar el inicio de sesión en SharedPreferences
+    private fun guardarInicioSesion(user: UserModel) {
+        val sharedPref = getSharedPreferences("login_data", MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putInt("id_user", user.idUser)
+        editor.putString("nomb_user", user.nombUser)
+        editor.putString("apell_user", user.apellUser)
+        editor.putString("rol_user", user.rolUser)
+        editor.apply()
+    }
 
-            editor.apply()
+    // Método para verificar el inicio de sesión al abrir la actividad
+    private fun comprobarInicioSesion() {
+        val sharedPref = getSharedPreferences("login_data", MODE_PRIVATE)
+        if (sharedPref.contains("id_user")) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            Toast.makeText(this, "Bienvenido ${user.nombUser} ${user.apellUser}", Toast.LENGTH_LONG).show()
-        } else {
-            Toast.makeText(this, "Credenciales Incorrectas", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 }
