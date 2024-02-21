@@ -6,6 +6,10 @@
     app:cardBackgroundColor="@color/color_8vo"
     app:cardCornerRadius="15dp">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -307,4 +311,5 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+    </ScrollView>
 </androidx.cardview.widget.CardView>
