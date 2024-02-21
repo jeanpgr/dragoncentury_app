@@ -5,11 +5,13 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
@@ -113,6 +115,9 @@ class CastleFragment : Fragment() {
         dialog.setCanceledOnTouchOutside(true)
         dialog.setContentView(R.layout.dialog_gtncoche)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val window = dialog.window
+        window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        window?.setGravity(Gravity.CENTER)
 
         val imgGtnCoche : ImageView = dialog.findViewById(R.id.imgViewDialogCoche)
         val txtNameCoche : TextView = dialog.findViewById(R.id.txtDialogNameCoche)
@@ -159,6 +164,9 @@ class CastleFragment : Fragment() {
         dialog.setCanceledOnTouchOutside(true)
         dialog.setContentView(R.layout.dialog_confirmar)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val window = dialog.window
+        window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        window?.setGravity(Gravity.CENTER)
 
         val txtMessage : TextView = dialog.findViewById(R.id.txtDialogConfirmar)
         val btnAceptar : Button = dialog.findViewById(R.id.btnAceptar)

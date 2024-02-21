@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +25,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -133,9 +133,9 @@ class ReportsFragment : Fragment() {
         }
 
         btnGenerateReport.setOnClickListener {
-            getListCoches()
+            getListCoches(view)
             if (cochesCargados) {
-                showDialogGenerateReport()
+                showDialogGenerateReport(view)
             } else {
                 showProgressDialog()
                 btnGenerateReport.isEnabled = false
@@ -227,7 +227,7 @@ class ReportsFragment : Fragment() {
     }
 
     // Funcion para mostrar el dialog de generar reporte
-    private fun showDialogGenerateReport() {
+    private fun showDialogGenerateReport(view: View) {
             val dialog = Dialog(requireContext())
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(false)
@@ -313,7 +313,7 @@ class ReportsFragment : Fragment() {
                         showDialogConfirmar(dialog, "¿Estás seguro de que deseas registrar este reporte?") {
                             generateReport(
                                 editTxtLectFinDraRoj, editTxtLectFinDraChi, editTxtLectFinDraAma,
-                                editTxtLectFinDraDC, editTxtDescGasto, editTxtTotalGasto
+                                editTxtLectFinDraDC, editTxtDescGasto, editTxtTotalGasto, view
                             )
                         }
                     }
@@ -371,7 +371,7 @@ class ReportsFragment : Fragment() {
     }
 
     // Función para obter lista de coches
-    private fun getListCoches() {
+    private fun getListCoches(view: View) {
         cochesCargados = false
         cocheViewModel.getLiveDataCoches().observe(viewLifecycleOwner, Observer { coches ->
             cochesList.clear() // Vaciar la lista antes de agregar nuevos coches
@@ -379,7 +379,7 @@ class ReportsFragment : Fragment() {
             cochesCargados = true
             // Verificar si el botón de generar reporte está visible y los coches están cargados
             if (!dialogoMostrado && cochesCargados) {
-                showDialogGenerateReport()
+                showDialogGenerateReport(view)
                 hideProgressDialog()
                 dialogoMostrado = true
             }
@@ -406,7 +406,7 @@ class ReportsFragment : Fragment() {
 
     private fun generateReport(editTxtLectFinDraRoj: EditText, editTxtLectFinDraChi: EditText,
                                editTxtLectFinDraAma: EditText, editTxtLectFinDraDC: EditText,
-                               editTxtDescGasto: EditText, editTxtTotalGasto: EditText) {
+                               editTxtDescGasto: EditText, editTxtTotalGasto: EditText, view: View) {
 
         val draRoj = cochesList.getOrNull(0)
         val draChi = cochesList.getOrNull(1)
@@ -457,6 +457,7 @@ class ReportsFragment : Fragment() {
             val reportModel = ReportModel(0, fecha, totalVueltas, totalVenta, descripNov,
                                             gastoTotal, idUserPer?:0, nombUser?:"", detalleReport, withGasto)
             sendReport(reportModel)
+            verificarPermisos(view, reportModel)
 
         } else {
             val withGasto = true
@@ -473,6 +474,7 @@ class ReportsFragment : Fragment() {
             val reportModel = ReportModel(0, fecha, totalVueltas, totalVenta, descripNov,
                 gastoTotal, idUserPer?:0, nombUser?:"", detalleReport, withGasto)
             sendReport(reportModel)
+            verificarPermisos(view, reportModel)
         }
     }
 
@@ -484,6 +486,9 @@ class ReportsFragment : Fragment() {
         dialog.setCanceledOnTouchOutside(true)
         dialog.setContentView(R.layout.dialog_confirmar)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val window = dialog.window
+        window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        window?.setGravity(Gravity.CENTER)
 
         val txtMessage : TextView = dialog.findViewById(R.id.txtDialogConfirmar)
         val btnAceptar : Button = dialog.findViewById(R.id.btnAceptar)
