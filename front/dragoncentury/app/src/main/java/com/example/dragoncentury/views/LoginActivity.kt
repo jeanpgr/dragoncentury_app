@@ -49,7 +49,9 @@ class LoginActivity : AppCompatActivity() {
         getUserLogin(nickUser, passwUser) { user ->
             if (user != null) {
                 guardarInicioSesion(user)
-                val intent = Intent(this, MainActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
                 startActivity(intent)
                 Toast.makeText(this, "Bienvenido ${user.nombUser} ${user.apellUser}", Toast.LENGTH_LONG).show()
             } else {

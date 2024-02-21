@@ -51,7 +51,6 @@ class ReportPDFGenerator {
 
         fun generatePDF(context: Context, reportModel: ReportModel, nameReport: String) {
             try {
-
                 val dir = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), FOLDER)
                 val nameUnique = generateUniqueFileName(dir, nameReport, reportModel.idReporte.toString())
 
