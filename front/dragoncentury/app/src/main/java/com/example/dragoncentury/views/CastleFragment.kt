@@ -5,16 +5,19 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -65,8 +68,14 @@ class CastleFragment : Fragment() {
     private lateinit var rvGtnCoches: RecyclerView
     private var gtnCochesList: List<CocheModel> = listOf()
     private val cocheViewModel : CocheViewModel by viewModels()
+    private lateinit var progressBarDC: ProgressBar
+    private var cochesCargados = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        progressBarDC = view.findViewById(R.id.progressBarGC)
+
         getListCoches(view)
     }
 
@@ -84,9 +93,16 @@ class CastleFragment : Fragment() {
 
     //Trae la lista de objetos(coches) del ViewModel con LiveData - Observer
     private fun getListCoches(view: View) {
+        showProgressDialog()
         cocheViewModel.getLiveDataCoches().observe(viewLifecycleOwner, Observer {
             gtnCochesList = it
-            initDataInRecycleView(view)
+            cochesCargados = true
+            if (cochesCargados) {
+                hideProgressDialog()
+                initDataInRecycleView(view)
+            } else {
+                showProgressDialog()
+            }
         })
         cocheViewModel.getCoches(requireContext())
     }
@@ -99,6 +115,9 @@ class CastleFragment : Fragment() {
         dialog.setCanceledOnTouchOutside(true)
         dialog.setContentView(R.layout.dialog_gtncoche)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val window = dialog.window
+        window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        window?.setGravity(Gravity.CENTER)
 
         val imgGtnCoche : ImageView = dialog.findViewById(R.id.imgViewDialogCoche)
         val txtNameCoche : TextView = dialog.findViewById(R.id.txtDialogNameCoche)
@@ -145,6 +164,9 @@ class CastleFragment : Fragment() {
         dialog.setCanceledOnTouchOutside(true)
         dialog.setContentView(R.layout.dialog_confirmar)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val window = dialog.window
+        window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        window?.setGravity(Gravity.CENTER)
 
         val txtMessage : TextView = dialog.findViewById(R.id.txtDialogConfirmar)
         val btnAceptar : Button = dialog.findViewById(R.id.btnAceptar)
@@ -294,5 +316,13 @@ class CastleFragment : Fragment() {
 
         cocheModel.numCambBat = newNumCambBat
         updateCoche(cocheModel)
+    }
+
+    private fun showProgressDialog() {
+        progressBarDC.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressDialog() {
+        progressBarDC.visibility = View.GONE
     }
 }

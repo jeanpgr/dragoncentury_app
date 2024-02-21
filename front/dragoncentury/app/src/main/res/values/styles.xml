@@ -1,11 +1,11 @@
 <resources>
 
     <style name="datePickerTheme" parent="android:Theme.Material.Light.Dialog">
-        <item name="android:colorAccent">@color/color_6to</item>
+        <item name="android:colorAccent">@color/color_4to</item>
     </style>
 
     <style name="DatePickerDialogButtons">
-        <item name="android:textColor">@color/color_6to</item>
+        <item name="android:textColor">@color/color_4to</item>
     </style>
 
 </resources>

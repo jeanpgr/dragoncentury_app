@@ -7,13 +7,15 @@ class ApiUrlManager {
             ApiUrlManager()
         }
 
-        private const val SERVER_NAME = "192.168.100.76"
+        private const val SERVER_NAME = "ws-dragoncentury.info"
 
-        private const val URL_LOGIN = "http://$SERVER_NAME/sv_dragoncentury/login.php"
-        private const val URL_GET_COCHES = "http://$SERVER_NAME/sv_dragoncentury/getCoches.php"
-        private const val URL_UPDATE_COCHE = "http://$SERVER_NAME/sv_dragoncentury/updateCoche.php"
-        private const val URL_FILT_REPORT = "http://$SERVER_NAME/sv_dragoncentury/filtrarReportes.php"
-        private const val URL_GENER_REPORT = "http://$SERVER_NAME/sv_dragoncentury/generarReporte.php"
+        private const val URL_LOGIN = "https://$SERVER_NAME/api/login.php"
+        private const val URL_GET_USER = "https://$SERVER_NAME/api/getUser.php"
+        private const val URL_GET_COCHES = "https://$SERVER_NAME/api/getCoches.php"
+        private const val URL_UPDATE_COCHE = "https://$SERVER_NAME/api/updateCoche.php"
+        private const val URL_FILT_REPORT = "https://$SERVER_NAME/api/filtrarReportes.php"
+        private const val URL_GENER_REPORT = "https://$SERVER_NAME/api/generarReporte.php"
+
         fun getUrlLogin(): String {
             return URL_LOGIN
         }
@@ -30,8 +32,12 @@ class ApiUrlManager {
             return URL_FILT_REPORT
         }
 
-        fun getGeneurReport(): String {
+        fun getUrlGenerateReport(): String {
             return URL_GENER_REPORT
+        }
+
+        fun getUrlGetUser(): String {
+            return URL_GET_USER
         }
     }
 }
