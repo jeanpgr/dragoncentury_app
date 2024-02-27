@@ -112,6 +112,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="2dp"
                 android:src="@drawable/icon_add_circle" />
 
         </LinearLayout>
@@ -145,6 +148,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="2dp"
                 android:src="@drawable/icon_add_circle" />
 
         </LinearLayout>

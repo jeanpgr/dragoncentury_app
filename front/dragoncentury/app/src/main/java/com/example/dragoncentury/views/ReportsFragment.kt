@@ -1,5 +1,8 @@
 package com.example.dragoncentury.views
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
@@ -12,12 +15,15 @@ import android.os.Looper
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -87,12 +93,13 @@ class ReportsFragment : Fragment() {
     private lateinit var sharedPref: SharedPreferences
     private var userModel : UserModel? = null
 
+    // Definición de componentes para el view
     private lateinit var editTxtDateDesde: EditText
     private lateinit var editTxtDateHasta: EditText
-    private lateinit var btnBuscarReport: Button
     private lateinit var btnGenerateReport: Button
-    private lateinit var btnCleanFilter: Button
     private lateinit var txtFechaActual: TextView
+    private lateinit var iconSearchReport: ImageView
+    private lateinit var iconCancel: ImageView
 
     private var cochesCargados = false
     private var dialogoMostrado = false
@@ -107,19 +114,21 @@ class ReportsFragment : Fragment() {
 
     private lateinit var progressBar: ProgressBar
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         editTxtDateDesde = view.findViewById(R.id.editTxtDateDesde)
         editTxtDateHasta = view.findViewById(R.id.editTxtDateHasta)
         btnGenerateReport = view.findViewById(R.id.btnGenerarReporte)
-        btnBuscarReport = view.findViewById(R.id.btnBuscarReporte)
-        btnCleanFilter = view.findViewById(R.id.btnCleanFilter)
         txtFechaActual = view.findViewById(R.id.txtFechaActual)
         progressBar = view.findViewById(R.id.progressBar)
+        iconSearchReport = view.findViewById(R.id.iconSearchReport)
+        iconCancel = view.findViewById(R.id.iconCancel)
 
         hideProgressDialog()
         getUser()
+        initWithFiveReports(view)
 
         txtFechaActual.text = captureDateLocateCurrent()
 
@@ -145,20 +154,41 @@ class ReportsFragment : Fragment() {
             }
         }
 
-        btnBuscarReport.setOnClickListener {
-            val dateDesde = editTxtDateDesde.text.toString()
-            val dateHasta = editTxtDateHasta.text.toString()
-            toFindReports(view, dateDesde, dateHasta)
+        iconSearchReport.setOnTouchListener { viewic, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    animateIconDown(viewic)
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    animateIconUp(viewic)
+                    // Ejecutar la acción al hacer clic en el icono de búsqueda
+                    val dateDesde = editTxtDateDesde.text.toString()
+                    val dateHasta = editTxtDateHasta.text.toString()
+                    toFindReports(view, dateDesde, dateHasta)
+                }
+            }
+            false
         }
 
-        btnCleanFilter.setOnClickListener {
-            try {
-                editTxtDateDesde.text.clear()
-                editTxtDateHasta.text.clear()
-                rvReports.adapter = null
-            } catch (e: Exception) {
-                e.printStackTrace()
+        // Aplicar el efecto de touch y acciones al icono de cancelar
+        iconCancel.setOnTouchListener { viewic, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    animateIconDown(viewic)
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    animateIconUp(viewic)
+                    // Ejecutar la acción al hacer clic en el icono de cancelar
+                    try {
+                        editTxtDateDesde.text.clear()
+                        editTxtDateHasta.text.clear()
+                        initWithFiveReports(view)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
             }
+            false
         }
     }
 
@@ -208,6 +238,15 @@ class ReportsFragment : Fragment() {
             showFiltersReports(view)
         })
         reportViewModel.getReports(requireContext(), dateDesde, dateHasta)
+    }
+
+    // función para cargar los 5 ultimos reportes apenas se inicia el fragment
+    private fun initWithFiveReports(view: View) {
+        reportViewModel.getLiveDataReports().observe(viewLifecycleOwner, Observer {
+            reportsList = it
+            showFiltersReports(view)
+        })
+        reportViewModel.getUltReports(requireContext())
     }
 
     // funcion para mosrar los reportes filtrados
@@ -514,5 +553,31 @@ class ReportsFragment : Fragment() {
 
     private fun hideProgressDialog() {
         progressBar.visibility = View.GONE
+    }
+
+    private fun animateIconDown(view: View) {
+        // Escalar la imagen hacia abajo
+        val scaleDownX = ObjectAnimator.ofFloat(view, "scaleX", 0.8f)
+        val scaleDownY = ObjectAnimator.ofFloat(view, "scaleY", 0.8f)
+        scaleDownX.duration = 200
+        scaleDownY.duration = 200
+        scaleDownX.interpolator = AccelerateDecelerateInterpolator()
+        scaleDownY.interpolator = AccelerateDecelerateInterpolator()
+        val scaleDown = AnimatorSet()
+        scaleDown.play(scaleDownX).with(scaleDownY)
+        scaleDown.start()
+    }
+
+    private fun animateIconUp(view: View) {
+        // Escalar la imagen hacia arriba
+        val scaleUpX = ObjectAnimator.ofFloat(view, "scaleX", 1f)
+        val scaleUpY = ObjectAnimator.ofFloat(view, "scaleY", 1f)
+        scaleUpX.duration = 200
+        scaleUpY.duration = 200
+        scaleUpX.interpolator = AccelerateDecelerateInterpolator()
+        scaleUpY.interpolator = AccelerateDecelerateInterpolator()
+        val scaleUp = AnimatorSet()
+        scaleUp.play(scaleUpX).with(scaleUpY)
+        scaleUp.start()
     }
 }

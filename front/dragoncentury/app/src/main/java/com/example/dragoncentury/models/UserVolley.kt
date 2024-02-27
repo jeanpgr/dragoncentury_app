@@ -27,8 +27,8 @@ class UserVolley {
                     val user = parseJson(response)
                     callback(user)
                 },
-                Response.ErrorListener { error ->
-                    Toast.makeText(context, "Error en la petición: ${error.message}", Toast.LENGTH_SHORT)
+                Response.ErrorListener {
+                    Toast.makeText(context, "Error de conexión", Toast.LENGTH_SHORT)
                         .show()
                 }) {
                 override fun getParams(): Map<String, String> {

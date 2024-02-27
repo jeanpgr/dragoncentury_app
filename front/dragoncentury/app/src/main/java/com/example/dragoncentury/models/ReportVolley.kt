@@ -3,6 +3,7 @@ package com.example.dragoncentury.models
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
@@ -74,8 +75,8 @@ class ReportVolley {
                         callback(reportsList)
                     }
                 },
-                { error ->
-                     Toast.makeText(context, "Error del servidor: ${error.message} " , Toast.LENGTH_SHORT).show()
+                {
+                     Toast.makeText(context, "Error de conexión" , Toast.LENGTH_SHORT).show()
                 }){
                 override fun getParams(): Map<String, String>? {
                     val params = HashMap<String, String>()
@@ -84,6 +85,22 @@ class ReportVolley {
                     return params
                 }
             }
+            queue.add(stringRequest)
+        }
+
+        fun getUltimateReports(context: Context, callback: (List<ReportModel>)->Unit) {
+            val queue = Volley.newRequestQueue(context)
+            val url = apiServices.getUrlGetUltRep()
+            val stringRequest = StringRequest(
+                Request.Method.GET, url,
+                {response ->
+                    reportsList = parseJson(response)
+                    callback(reportsList)
+                },
+                {
+                    Toast.makeText(context, "Error de conexión" , Toast.LENGTH_SHORT).show()
+                }
+            )
             queue.add(stringRequest)
         }
 

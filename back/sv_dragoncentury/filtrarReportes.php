@@ -18,7 +18,8 @@ if ($date_desde !== null && $date_hasta !== null) {
             INNER JOIN detalle_vuelta AS dv ON rv.id_reporte = dv.id_reporte_per 
             INNER JOIN usuarios AS u ON rv.id_user_per = u.id_user 
             INNER JOIN coches AS c ON dv.id_coche_per = c.id_coche
-            WHERE rv.fecha BETWEEN ? AND ?";
+            WHERE rv.fecha BETWEEN ? AND ?
+            ORDER BY rv.id_reporte ASC";
 
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("ss", $date_desde, $date_hasta);

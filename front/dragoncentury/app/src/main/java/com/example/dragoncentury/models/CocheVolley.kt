@@ -54,7 +54,7 @@ class CocheVolley {
                     callback(cochesList)
                 },
                 { error ->
-                    Toast.makeText(context, "Error del servidor: ${error.message} " , Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Error de conexión" , Toast.LENGTH_SHORT).show()
                 }
             )
             queue.add(stringRequest)

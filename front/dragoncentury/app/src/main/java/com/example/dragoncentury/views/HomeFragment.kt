@@ -51,13 +51,13 @@ class HomeFragment : Fragment() {
             }
     }
 
-    private lateinit var iconLogout: ImageView
+    private lateinit var btnLogout: Button
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        iconLogout = view.findViewById(R.id.iconLogout)
+        btnLogout = view.findViewById(R.id.btnLogout)
 
-        iconLogout.setOnClickListener {
+        btnLogout.setOnClickListener {
             showDialogConfirmar("¿Está seguro que desea cerrar sesión?",) {cerrarSesion()}
         }
     }

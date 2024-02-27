@@ -1,5 +1,8 @@
 package com.example.dragoncentury.views
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -8,10 +11,12 @@ import android.os.Bundle
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
@@ -88,7 +93,7 @@ class CastleFragment : Fragment() {
     private fun initDataInRecycleView(view: View) {
         rvGtnCoches = view.findViewById(R.id.rvGtnCoches)
         rvGtnCoches.layoutManager = LinearLayoutManager(context)
-        rvGtnCoches.adapter = GtnCocheAdapter(gtnCochesList, {onCocheSelected(it)})
+        rvGtnCoches.adapter = GtnCocheAdapter(gtnCochesList) { onCocheSelected(it) }
     }
 
     //Trae la lista de objetos(coches) del ViewModel con LiveData - Observer
@@ -108,6 +113,7 @@ class CastleFragment : Fragment() {
     }
 
     //Muestra el cuadro de dialogo del coche seleccionado
+    @SuppressLint("ClickableViewAccessibility")
     private fun showDialogGtnCoches(cocheModel: CocheModel) {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -141,16 +147,41 @@ class CastleFragment : Fragment() {
         }
 
         val iconAddNumCargas : ImageView = dialog.findViewById(R.id.iconAddNumCargas)
-        iconAddNumCargas.setOnClickListener {
-            showDialogConfirmar("¿Desea confirmar el incremento en el número de cargas?",
-                {addNumCargas(cocheModel, txtNumCargas)})
-
+        iconAddNumCargas.setOnTouchListener { view, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    animateIconDown(view)
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    animateIconUp(view)
+                    try {
+                        showDialogConfirmar("¿Desea confirmar el incremento en el número de cargas?"
+                        ) { addNumCargas(cocheModel, txtNumCargas) }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            false
         }
 
         val iconNumCambBat : ImageView = dialog.findViewById(R.id.iconAddNumCambBat)
-        iconNumCambBat.setOnClickListener {
-            showDialogConfirmar("¿Desea confirmar el incremento en el número de cambios de batería?",
-                {addNumCambBat(cocheModel, txtCambBatt)})
+        iconNumCambBat.setOnTouchListener { view, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    animateIconDown(view)
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    animateIconUp(view)
+                    try {
+                        showDialogConfirmar("¿Desea confirmar el incremento en el número de cambios de batería?"
+                        ) { addNumCambBat(cocheModel, txtCambBatt) }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            false
         }
 
         dialog.show()
@@ -324,5 +355,31 @@ class CastleFragment : Fragment() {
 
     private fun hideProgressDialog() {
         progressBarDC.visibility = View.GONE
+    }
+
+    private fun animateIconDown(view: View) {
+        // Escalar la imagen hacia abajo
+        val scaleDownX = ObjectAnimator.ofFloat(view, "scaleX", 0.8f)
+        val scaleDownY = ObjectAnimator.ofFloat(view, "scaleY", 0.8f)
+        scaleDownX.duration = 200
+        scaleDownY.duration = 200
+        scaleDownX.interpolator = AccelerateDecelerateInterpolator()
+        scaleDownY.interpolator = AccelerateDecelerateInterpolator()
+        val scaleDown = AnimatorSet()
+        scaleDown.play(scaleDownX).with(scaleDownY)
+        scaleDown.start()
+    }
+
+    private fun animateIconUp(view: View) {
+        // Escalar la imagen hacia arriba
+        val scaleUpX = ObjectAnimator.ofFloat(view, "scaleX", 1f)
+        val scaleUpY = ObjectAnimator.ofFloat(view, "scaleY", 1f)
+        scaleUpX.duration = 200
+        scaleUpY.duration = 200
+        scaleUpX.interpolator = AccelerateDecelerateInterpolator()
+        scaleUpY.interpolator = AccelerateDecelerateInterpolator()
+        val scaleUp = AnimatorSet()
+        scaleUp.play(scaleUpX).with(scaleUpY)
+        scaleUp.start()
     }
 }

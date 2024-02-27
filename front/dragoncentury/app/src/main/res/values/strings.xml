@@ -32,9 +32,12 @@
     <string name="str_btn_addgastos">Agregar Gastos</string>
     <string name="str_btn_generar">Generar</string>
     <string name="str_hit_detbrev">Detallar brevemente...</string>
-    <string name="str_lbl_version">v1.0.0</string>
+    <string name="str_lbl_version">v1.1.0</string>
     <string name="str_lbl_cargas">Cargas:</string>
     <string name="str_lbl_vueltas">Vueltas:</string>
+    <string name="str_btn_res_ven">Resumen de Ventas</string>
+    <string name="str_btn_cort_mens">Cortes Mensuales</string>
+    <string name="str_btn_cer_sesion">Cerrar Sesión</string>
     <!-- TODO: Remove or change this placeholder text -->
 
 </resources>

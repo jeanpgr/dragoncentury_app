@@ -1,5 +1,8 @@
 package com.example.dragoncentury.customcomponents
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Bitmap
@@ -7,8 +10,11 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.os.Environment
+import android.view.MotionEvent
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.Toast
 import com.example.dragoncentury.R
@@ -44,8 +50,7 @@ class ReportPDFGenerator {
             val file = File(dir, nameUnique)
             if (file.exists()) {
                 file.delete()
-            } else {
-                Toast.makeText(context, "El PDF no existe", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "PDF descartado", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -133,6 +138,7 @@ class ReportPDFGenerator {
             return fileName
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         private fun showDialogPdfView(context: Context, file: File, nameUnique: String) {
             val dialog = Dialog(context)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -147,22 +153,49 @@ class ReportPDFGenerator {
             reportPdf.isZoomEnabled = true
             reportPdf.show()
 
-            val btnCloseViewPdf: ImageView = dialog.findViewById(R.id.iconCloseViewPdf)
-            val btnDownPdf: ImageView = dialog.findViewById(R.id.iconDownloadPdf)
+            val iconCloseViewPdf: ImageView = dialog.findViewById(R.id.iconCloseViewPdf)
+            val iconDownPdf: ImageView = dialog.findViewById(R.id.iconDownloadPdf)
 
-            btnCloseViewPdf.setOnClickListener {
-                deletePdf(context, nameUnique)
-                dialog.dismiss()
+            iconCloseViewPdf.setOnTouchListener { view , motionEvent ->
+                when (motionEvent.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        animateIconDown(view)
+                    }
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                        animateIconUp(view)
+                        try {
+                            deletePdf(context, nameUnique)
+                            dialog.dismiss()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+                false
             }
 
-            btnDownPdf.setOnClickListener {
-                downloadPdf(context)
-                dialog.dismiss()
+            iconDownPdf.setOnTouchListener { view, motionEvent ->
+                when (motionEvent.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        animateIconDown(view)
+                    }
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                        animateIconUp(view)
+                        try {
+                            downloadPdf(context)
+                            dialog.dismiss()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+                false
             }
 
             dialog.show()
         }
 
+        @SuppressLint("UseCompatLoadingForDrawables")
         fun getResizedLogoImage(context: Context): Image {
             val logoBitmap = (context.resources.getDrawable(R.mipmap.img_logo) as BitmapDrawable).bitmap
             val stream = ByteArrayOutputStream()
@@ -173,6 +206,31 @@ class ReportPDFGenerator {
             logoImage.setAbsolutePosition(50f, 700f)
             return logoImage
         }
-    }
 
+        private fun animateIconDown(view: View) {
+            // Escalar la imagen hacia abajo
+            val scaleDownX = ObjectAnimator.ofFloat(view, "scaleX", 0.8f)
+            val scaleDownY = ObjectAnimator.ofFloat(view, "scaleY", 0.8f)
+            scaleDownX.duration = 200
+            scaleDownY.duration = 200
+            scaleDownX.interpolator = AccelerateDecelerateInterpolator()
+            scaleDownY.interpolator = AccelerateDecelerateInterpolator()
+            val scaleDown = AnimatorSet()
+            scaleDown.play(scaleDownX).with(scaleDownY)
+            scaleDown.start()
+        }
+
+        private fun animateIconUp(view: View) {
+            // Escalar la imagen hacia arriba
+            val scaleUpX = ObjectAnimator.ofFloat(view, "scaleX", 1f)
+            val scaleUpY = ObjectAnimator.ofFloat(view, "scaleY", 1f)
+            scaleUpX.duration = 200
+            scaleUpY.duration = 200
+            scaleUpX.interpolator = AccelerateDecelerateInterpolator()
+            scaleUpY.interpolator = AccelerateDecelerateInterpolator()
+            val scaleUp = AnimatorSet()
+            scaleUp.play(scaleUpX).with(scaleUpY)
+            scaleUp.start()
+        }
+    }
 }

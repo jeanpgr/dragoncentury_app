@@ -27,4 +27,11 @@ class ReportViewModel : ViewModel() {
     fun insertReport(context: Context, reportModel: ReportModel) {
         ReportVolley.insertReport(context, reportModel)
     }
+
+    fun getUltReports(context: Context) {
+        ReportVolley.getUltimateReports(context) {
+            reportList: List<ReportModel> ->
+            reportModel.postValue(reportList)
+        }
+    }
 }
