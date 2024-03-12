@@ -67,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
         editor.putInt("id_user", user.idUser)
         editor.putString("nomb_user", user.nombUser)
         editor.putString("apell_user", user.apellUser)
-        editor.putString("rol_user", user.rolUser)
+        editor.putInt("id_rol_user", user.idRolUser)
         editor.apply()
     }
 

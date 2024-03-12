@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.SalesSummaryFragment">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/str_lbl_title_res_ven"
+            android:textColor="@color/color_4to"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="8dp"
+            android:text="Ingrese el rango de fechas:"
+            android:textColor="@color/color_6to"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editTxtDatDsdRV"
+                android:layout_width="115dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/custom_edit_txt"
+                android:clickable="false"
+                android:ems="20"
+                android:focusable="false"
+                android:textColor="@color/color_6to"
+                android:hint="@string/str_lbl_desde" />
+
+            <EditText
+                android:id="@+id/editTxtDatHstRV"
+                android:layout_width="115dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/custom_edit_txt"
+                android:clickable="false"
+                android:ems="20"
+                android:focusable="false"
+                android:textColor="@color/color_6to"
+                android:hint="@string/str_lbl_hasta" />
+
+            <ImageView
+                android:id="@+id/iconGoDoc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="5dp"
+                android:src="@drawable/icon_go" />
+
+            <ImageView
+                android:id="@+id/iconDownDoc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="5dp"
+                android:src="@drawable/icon_down_doc" />
+
+            <ImageView
+                android:id="@+id/iconCloseDoc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="2dp"
+                android:src="@drawable/icon_close_doc" />
+
+        </LinearLayout>
+
+        <com.pdfview.PDFView
+            android:id="@+id/viewPdfResumVen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+
+
+</FrameLayout>

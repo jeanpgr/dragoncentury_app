@@ -6,6 +6,7 @@ data class ReportModel(
     val idReporte: Int,
     val fecha: String,
     val totalVueltas: Int,
+    val totalCortesias: Int,
     val totalVenta: BigDecimal,
     val descripNov: String,
     val gastoTotal: BigDecimal,

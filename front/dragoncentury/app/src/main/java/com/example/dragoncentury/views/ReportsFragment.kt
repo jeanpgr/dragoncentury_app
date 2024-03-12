@@ -132,7 +132,6 @@ class ReportsFragment : Fragment() {
 
         txtFechaActual.text = captureDateLocateCurrent()
 
-
         editTxtDateDesde.setOnClickListener{
             showDatePickerDialog(editTxtDateDesde)
         }
@@ -179,13 +178,9 @@ class ReportsFragment : Fragment() {
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     animateIconUp(viewic)
                     // Ejecutar la acción al hacer clic en el icono de cancelar
-                    try {
-                        editTxtDateDesde.text.clear()
-                        editTxtDateHasta.text.clear()
-                        initWithFiveReports(view)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+                    editTxtDateDesde.text.clear()
+                    editTxtDateHasta.text.clear()
+                    initWithFiveReports(view)
                 }
             }
             false
@@ -200,7 +195,7 @@ class ReportsFragment : Fragment() {
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED -> {
                 Toast.makeText(requireContext(), "PERMISOS CONCEDIDOS", Toast.LENGTH_SHORT).show()
-                ReportPDFGenerator.generatePDF(requireContext(), reportModel, "Reporte")
+                ReportPDFGenerator.generatePdfReportVenta(requireContext(), reportModel, "Reporte")
             }
 
             ActivityCompat.shouldShowRequestPermissionRationale(
@@ -306,6 +301,7 @@ class ReportsFragment : Fragment() {
             val editTxtLectFinDraAma : EditText = dialog.findViewById(R.id.editTxtLectFinDraAma)
             val editTxtLectFinDraChi : EditText = dialog.findViewById(R.id.editTxtLectFinDraChi)
             val editTxtLectFinDraDC : EditText = dialog.findViewById(R.id.editTxtLectFinDraDC)
+            val editTxtCortesias : EditText = dialog.findViewById(R.id.editTxtCortesias)
 
             //Control de valores de lectura (Lectura final no sea menor a Lectura Inicial)
             cochesList.getOrNull(0)?.let { controlInputLectFinal(editTxtLectFinDraRoj, it.numVueltas) }
@@ -331,7 +327,8 @@ class ReportsFragment : Fragment() {
                 if (!editTxtLectFinDraRoj.text.isNullOrBlank() &&
                     !editTxtLectFinDraChi.text.isNullOrBlank() &&
                     !editTxtLectFinDraAma.text.isNullOrBlank() &&
-                    !editTxtLectFinDraDC.text.isNullOrBlank()
+                    !editTxtLectFinDraDC.text.isNullOrBlank() &&
+                    !editTxtCortesias.text.isNullOrBlank()
                 ) {
                     if (editTxtDescGasto.text.isNullOrBlank() && !editTxtTotalGasto.text.isNullOrBlank()) {
                         // Si la descripción está vacía pero el total gasto está lleno
@@ -352,7 +349,7 @@ class ReportsFragment : Fragment() {
                         showDialogConfirmar(dialog, "¿Estás seguro de que deseas registrar este reporte?") {
                             generateReport(
                                 editTxtLectFinDraRoj, editTxtLectFinDraChi, editTxtLectFinDraAma,
-                                editTxtLectFinDraDC, editTxtDescGasto, editTxtTotalGasto, view
+                                editTxtLectFinDraDC, editTxtDescGasto, editTxtTotalGasto, editTxtCortesias, view
                             )
                         }
                     }
@@ -360,7 +357,7 @@ class ReportsFragment : Fragment() {
                     // Al menos uno de los campos de lectura final está vacío
                     Toast.makeText(
                         requireContext(),
-                        "Todos los campos de lectura final son requeridos",
+                        "Todos los campos de lectura final y cortesías son requeridos",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -405,8 +402,8 @@ class ReportsFragment : Fragment() {
         val idUser = sharedPref.getInt("id_user", 0)
         val nombUser = sharedPref.getString("nomb_user", "").toString()
         val apellUser = sharedPref.getString("apell_user", "").toString()
-        val rolUser = sharedPref.getString("rol_user", "").toString()
-        userModel = UserModel(idUser, nombUser, apellUser, rolUser)
+        val idRolUser = sharedPref.getInt("id_rol_user", 0)
+        userModel = UserModel(idUser, nombUser, apellUser, idRolUser)
     }
 
     // Función para obter lista de coches
@@ -427,8 +424,9 @@ class ReportsFragment : Fragment() {
     }
 
     //Función para enviar reporte para su inserción
-    private fun sendReport(reportModel: ReportModel) {
+    private fun sendReportAndShowPdf(view: View, reportModel: ReportModel) {
         reportViewModel.insertReport(requireContext(), reportModel)
+        verificarPermisos(view, reportModel)
     }
 
     private fun controlInputLectFinal(editTxt: EditText, minLect: Int) {
@@ -445,7 +443,8 @@ class ReportsFragment : Fragment() {
 
     private fun generateReport(editTxtLectFinDraRoj: EditText, editTxtLectFinDraChi: EditText,
                                editTxtLectFinDraAma: EditText, editTxtLectFinDraDC: EditText,
-                               editTxtDescGasto: EditText, editTxtTotalGasto: EditText, view: View) {
+                               editTxtDescGasto: EditText, editTxtTotalGasto: EditText,
+                               editTxtCortesias: EditText, view: View) {
 
         val draRoj = cochesList.getOrNull(0)
         val draChi = cochesList.getOrNull(1)
@@ -481,7 +480,6 @@ class ReportsFragment : Fragment() {
         detalleReportList.add(cocheReportDraDC)
 
         if (editTxtDescGasto.text.isNullOrBlank() && editTxtTotalGasto.text.isNullOrBlank()) {
-
             val withGasto = false
             val descripNov = editTxtDescGasto.text.toString()
             val gastoTotal =  if (editTxtTotalGasto.text.isNotBlank())
@@ -490,14 +488,13 @@ class ReportsFragment : Fragment() {
             val nombUser = userModel?.nombUser
             val fecha = captureDateLocateCurrent()
             val totalVueltas = totalVueltasAux
-            val totalVenta = BigDecimal(totalVueltas) - gastoTotal
+            val totalCortesias = BigDecimal(editTxtCortesias.text.toString())
+            val totalVenta = BigDecimal(totalVueltas) - (gastoTotal + totalCortesias)
             val detalleReport = detalleReportList
 
-            val reportModel = ReportModel(0, fecha, totalVueltas, totalVenta, descripNov,
+            val reportModel = ReportModel(0, fecha, totalVueltas, totalCortesias.toInt(), totalVenta, descripNov,
                                             gastoTotal, idUserPer?:0, nombUser?:"", detalleReport, withGasto)
-            sendReport(reportModel)
-            verificarPermisos(view, reportModel)
-
+            sendReportAndShowPdf(view, reportModel)
         } else {
             val withGasto = true
             val descripNov = editTxtDescGasto.text.toString()
@@ -507,13 +504,13 @@ class ReportsFragment : Fragment() {
             val nombUser = userModel?.nombUser
             val fecha = captureDateLocateCurrent()
             val totalVueltas = totalVueltasAux
-            val totalVenta = BigDecimal(totalVueltas) - gastoTotal
+            val totalCortesias = BigDecimal(editTxtCortesias.text.toString())
+            val totalVenta = BigDecimal(totalVueltas) - (gastoTotal + totalCortesias)
             val detalleReport = detalleReportList
 
-            val reportModel = ReportModel(0, fecha, totalVueltas, totalVenta, descripNov,
+            val reportModel = ReportModel(0, fecha, totalVueltas, totalCortesias.toInt(), totalVenta, descripNov,
                 gastoTotal, idUserPer?:0, nombUser?:"", detalleReport, withGasto)
-            sendReport(reportModel)
-            verificarPermisos(view, reportModel)
+            sendReportAndShowPdf(view, reportModel)
         }
     }
 

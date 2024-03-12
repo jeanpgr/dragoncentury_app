@@ -29,6 +29,7 @@ $gasto_total = isset($data['gasto_total']) ? $data['gasto_total'] : '';
 $id_user_per = isset($data['id_user_per']) ? $data['id_user_per'] : '';
 $fecha = isset($data['fecha']) ? $data['fecha'] : '';
 $total_vueltas = isset($data['total_vueltas']) ? $data['total_vueltas'] : '';
+$total_cortesias = isset($data['total_cortesias']) ? $data['total_cortesias'] : '';
 $total_venta = isset($data['total_venta']) ? $data['total_venta'] : '';
 
 $detalle_reporte = isset($data['detalle_reporte']) ? $data['detalle_reporte'] : '';
@@ -52,10 +53,11 @@ if ($withGasto == true) {
     $max_id_report = $row['max_id_report'];
     $next_id_report = $max_id_report + 1;
 
-    $sqlInsertReport = "INSERT INTO reporte_vueltas (id_reporte, id_nov_gasto_per, id_user_per, 
-                        fecha, total_vueltas, total_venta) VALUES (?, ?, ?, ?, ?, ?)";
+    $sqlInsertReport = "INSERT INTO reporte_vueltas (id_reporte, id_nov_gasto_per, id_user_per, fecha, 
+                        total_vueltas, total_cortesias, total_venta) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmtIR = $conexion->prepare($sqlInsertReport);
-    $stmtIR->bind_param("iiisid", $next_id_report, $next_id_gasto, $id_user_per, $fecha, $total_vueltas, $total_venta);
+
+    $stmtIR->bind_param("iiisiid", $next_id_report, $next_id_gasto, $id_user_per, $fecha, $total_vueltas, $total_cortesias, $total_venta);
     if ($stmtIR->execute()) {
         $response = array('status' => 'success', 'message' => '¡Reporte registrado con éxito!');
         http_response_code(200); // OK
@@ -65,8 +67,8 @@ if ($withGasto == true) {
     }
     $stmtIR->close();
 
-    $sqlInsertDetalle = "INSERT INTO detalle_vuelta (id_reporte_per, id_coche_per, lectura_inicial, lectura_final, num_vueltas)
-                            VALUES (?, ?, ?, ?, ?)";
+    $sqlInsertDetalle = "INSERT INTO detalle_vuelta (id_reporte_per, id_coche_per, lectura_inicial, 
+                        lectura_final, num_vueltas) VALUES (?, ?, ?, ?, ?)";
     $stmtID = $conexion->prepare($sqlInsertDetalle);
 
     $sqlUpdateCoche = "UPDATE coches SET total_vueltas=? WHERE id_coche=?";
@@ -101,9 +103,9 @@ if ($withGasto == true) {
     $id_nov_gasto_per = 1;
 
     $sqlInsertReport = "INSERT INTO reporte_vueltas (id_reporte, id_nov_gasto_per, id_user_per, 
-                        fecha, total_vueltas, total_venta) VALUES (?, ?, ?, ?, ?, ?)";
+                        fecha, total_vueltas, total_cortesias, total_venta) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmtIR = $conexion->prepare($sqlInsertReport);
-    $stmtIR->bind_param("iiisid", $next_id_report, $id_nov_gasto_per, $id_user_per, $fecha, $total_vueltas, $total_venta);
+    $stmtIR->bind_param("iiisiid", $next_id_report, $id_nov_gasto_per, $id_user_per, $fecha, $total_vueltas, $total_cortesias, $total_venta);
 
     if ($stmtIR->execute()) {
         $response = array('status' => 'success', 'message' => '¡Reporte registrado con éxito!');

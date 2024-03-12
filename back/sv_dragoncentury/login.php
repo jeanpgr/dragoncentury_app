@@ -10,7 +10,7 @@ include 'conexion.php';
 $nick_user=$_REQUEST['nick_user'];
 $passw_user=$_REQUEST['passw_user'];
 
-$sentencia=$conexion->prepare("SELECT id_user, nomb_user, apell_user, rol_user FROM usuarios WHERE nick_user=? AND passw_user=?");
+$sentencia=$conexion->prepare("SELECT id_user, id_tip_user_per, nomb_user, apell_user FROM usuarios WHERE nick_user=? AND passw_user=?");
 $sentencia->bind_param('ss',$nick_user,$passw_user);
 $sentencia->execute();
 

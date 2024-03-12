@@ -3,7 +3,7 @@
 $servername = "localhost";
 $user = "root";
 $password = "";
-$dbname = "dragoncentury_db";
+$dbname = "u879541266_dragoncent_db";
 
 $conexion = mysqli_connect($servername,$user,$password,$dbname);
 //$conexion = new mysqli($servername,$user,$password,$dbname);

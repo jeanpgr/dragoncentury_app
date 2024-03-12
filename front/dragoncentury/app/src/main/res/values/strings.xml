@@ -39,5 +39,9 @@
     <string name="str_btn_cort_mens">Cortes Mensuales</string>
     <string name="str_btn_cer_sesion">Cerrar Sesión</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="str_lbl_title_res_ven">Resumen de Ventas y Gastos</string>
+    <string name="str_lbl_cortesias">Cortesías</string>
+    <!-- TODO: Remove or change this placeholder text -->
 
 </resources>

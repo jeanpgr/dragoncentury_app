@@ -91,6 +91,7 @@
                 android:clickable="false"
                 android:ems="20"
                 android:focusable="false"
+                android:textColor="@color/color_6to"
                 android:hint="@string/str_lbl_desde" />
 
             <EditText
@@ -102,6 +103,7 @@
                 android:clickable="false"
                 android:ems="20"
                 android:focusable="false"
+                android:textColor="@color/color_6to"
                 android:hint="@string/str_lbl_hasta" />
 
             <ImageView

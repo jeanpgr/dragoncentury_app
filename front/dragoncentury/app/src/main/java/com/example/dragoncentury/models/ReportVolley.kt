@@ -1,7 +1,6 @@
 package com.example.dragoncentury.models
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.Response
@@ -32,6 +31,7 @@ class ReportVolley {
             jsonObj.put("id_user_per", reportModel.idUserPer)
             jsonObj.put("fecha", reportModel.fecha)
             jsonObj.put("total_vueltas", reportModel.totalVueltas)
+            jsonObj.put("total_cortesias", reportModel.totalCortesias)
             jsonObj.put("total_venta", reportModel.totalVenta)
             val detalleReporteArray = JSONArray()
             reportModel.detalleCoches.forEach { coche ->
@@ -52,16 +52,15 @@ class ReportVolley {
                 {
                     Toast.makeText(context, "¡Reporte registrado con éxito!", Toast.LENGTH_LONG).show()
                 },
-                { error ->
-                    Toast.makeText(context,"Error del servidor: ${error.message}", Toast.LENGTH_SHORT).show()
+                {
+                    Toast.makeText(context,"Error de conexión", Toast.LENGTH_SHORT).show()
                 }
             ) { }
             queue.add(jsonObjectRequest)
         }
 
-
         fun getFiltroReport(context: Context, dateDesde: String, dateHasta: String,
-                            callback: (List<ReportModel>)->Unit) {
+                            callback: (List<ReportModel>) -> Unit) {
             val queue = Volley.newRequestQueue(context)
             val url = apiServices.getUrlFiltReport()
 
@@ -90,7 +89,7 @@ class ReportVolley {
 
         fun getUltimateReports(context: Context, callback: (List<ReportModel>)->Unit) {
             val queue = Volley.newRequestQueue(context)
-            val url = apiServices.getUrlGetUltRep()
+            val url = apiServices.getUrlUltimosRep()
             val stringRequest = StringRequest(
                 Request.Method.GET, url,
                 {response ->
@@ -114,6 +113,7 @@ class ReportVolley {
                     val idReport = jsonObject.getInt("id_reporte")
                     val fecha = jsonObject.getString("fecha")
                     val totalVueltas = jsonObject.getInt("total_vueltas")
+                    val totalCortesias = jsonObject.getInt("total_cortesias")
                     val totalVenta = BigDecimal(jsonObject.getString("total_venta"))
                     val descripNov = jsonObject.getString("descrip_nov")
                     val gastoTotal = BigDecimal(jsonObject.getString("gasto_total"))
@@ -133,15 +133,14 @@ class ReportVolley {
                         val cocheReportModel = CocheReportModel(idCoche, nombCoche, lecturaInicial, lecturaFinal, numVueltas)
                         coches.add(cocheReportModel)
                     }
-                    val reportModel = ReportModel(idReport, fecha, totalVueltas,
+                    val reportModel = ReportModel(idReport, fecha, totalVueltas, totalCortesias,
                         totalVenta, descripNov, gastoTotal, idUserPer,   nombsUser, coches, true)
                     reports.add(reportModel)
                 }
             } catch (e: JSONException) {
-                Log.e("JSON parse error", e.toString())
+                e.printStackTrace()
             }
             return reports
         }
-
     }
 }

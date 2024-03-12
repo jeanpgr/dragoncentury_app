@@ -45,7 +45,7 @@ class CocheVolley {
         }
         fun getCochesList(context: Context, callback: (List<CocheModel>) -> Unit) {
             val queue = Volley.newRequestQueue(context)
-            val url = apiServices.getUrlGetCoches()
+            val url = apiServices.getUrlCoches()
             val stringRequest = StringRequest(
                 Request.Method.GET, url,
                 { response ->

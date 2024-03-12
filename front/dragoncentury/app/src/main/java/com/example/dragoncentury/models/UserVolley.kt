@@ -48,10 +48,10 @@ class UserVolley {
                 val idUser = jsonObject.getInt("id_user")
                 val nombUser = jsonObject.getString("nomb_user")
                 val apellUser = jsonObject.getString("apell_user")
-                val rolUser = jsonObject.getString("rol_user")
+                val idRolUser = jsonObject.getInt("id_tip_user_per")
 
                 // Inicializa un nuevo objeto UserModel con los datos obtenidos del JSON
-                userModel = UserModel(idUser, nombUser, apellUser, rolUser)
+                userModel = UserModel(idUser, nombUser, apellUser, idRolUser)
             } catch (e: JSONException) {
                 println("Error al analizar el JSON: ${e.message}")
             }

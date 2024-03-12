@@ -54,7 +54,52 @@ class ReportPDFGenerator {
             }
         }
 
-        fun generatePDF(context: Context, reportModel: ReportModel, nameReport: String) {
+        private fun headerReportVenta(context: Context, reportModel: ReportModel, document: Document) {
+            val logoImage = getResizedLogoImage(context)
+            document.add(logoImage)
+            document.add(Paragraph("\n"))
+            document.add(Paragraph("\n"))
+            document.add(Paragraph("\n"))
+            document.add(Paragraph("\n"))
+            document.add(Paragraph("\n"))
+            document.add(Paragraph("\n"))
+            document.add(Paragraph("Num. Reporte: ${reportModel.idReporte}"))
+            document.add(Paragraph("Nombre encargado: ${reportModel.nombsUser}"))
+            document.add(Paragraph("Fecha generado: ${reportModel.fecha}"))
+            document.add(Paragraph("\n"))
+        }
+        private fun bodyReportVenta(reportModel: ReportModel, document: Document) {
+            val table = PdfPTable(4)
+            table.addCell("Nomb. Coche")
+            table.addCell("Lect. Inicial")
+            table.addCell("Lect. Final")
+            table.addCell("Total Vueltas")
+
+            for (coche in reportModel.detalleCoches) {
+                table.addCell(coche.nombCoche)
+                table.addCell(coche.lecturaInicial.toString())
+                table.addCell(coche.lecturaFinal.toString())
+                table.addCell(coche.numVueltas.toString())
+            }
+
+            table.addCell("Total Vueltas")
+            table.addCell("")
+            table.addCell("")
+            table.addCell(reportModel.totalVueltas.toString())
+
+            document.add(table)
+
+            document.add(Paragraph("\n"))
+        }
+
+        private fun endBodyReportVenta(reportModel: ReportModel, document: Document) {
+            document.add(Paragraph("Detalle Gasto: ${reportModel.descripNov}"))
+            document.add(Paragraph("Gasto Total: $${reportModel.gastoTotal}"))
+            document.add(Paragraph("Cortesías: ${reportModel.totalCortesias}"))
+            document.add(Paragraph("Total Venta: $${reportModel.totalVenta}"))
+        }
+
+        fun generatePdfReportVenta(context: Context, reportModel: ReportModel, nameReport: String) {
             try {
                 val dir = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), FOLDER)
                 val nameUnique = generateUniqueFileName(dir, nameReport, reportModel.idReporte.toString())
@@ -71,53 +116,11 @@ class ReportPDFGenerator {
 
                 document.open()
 
-                document.add(Paragraph("\n"))
-                document.add(Paragraph("\n"))
-                document.add(Paragraph("\n"))
-
-                val logoImage = getResizedLogoImage(context)
-
-                document.add(logoImage)
-                document.add(Paragraph("\n"))
-                document.add(Paragraph("\n"))
-                document.add(Paragraph("\n"))
-                document.add(Paragraph("\n"))
-                document.add(Paragraph("\n"))
-                document.add(Paragraph("\n"))
-
-                document.add(Paragraph("Num. Reporte: ${reportModel.idReporte}"))
-                document.add(Paragraph("Nombre encargado: ${reportModel.nombsUser}"))
-                document.add(Paragraph("Fecha generado: ${reportModel.fecha}"))
-                document.add(Paragraph("\n"))
-
-                val table = PdfPTable(4)
-                table.addCell("Nomb. Coche")
-                table.addCell("Lect. Inicial")
-                table.addCell("Lect. Final")
-                table.addCell("Total Vueltas")
-
-                for (coche in reportModel.detalleCoches) {
-                    table.addCell(coche.nombCoche)
-                    table.addCell(coche.lecturaInicial.toString())
-                    table.addCell(coche.lecturaFinal.toString())
-                    table.addCell(coche.numVueltas.toString())
-                }
-
-                table.addCell("Total Vueltas")
-                table.addCell("")
-                table.addCell("")
-                table.addCell(reportModel.totalVueltas.toString())
-
-                document.add(table)
-
-                document.add(Paragraph("\n"))
-
-                document.add(Paragraph("Detalle Gasto: ${reportModel.descripNov}"))
-                document.add(Paragraph("Gasto Total: $${reportModel.gastoTotal}"))
-                document.add(Paragraph("Total Venta: $${reportModel.totalVenta}"))
+                headerReportVenta(context, reportModel, document)
+                bodyReportVenta(reportModel, document)
+                endBodyReportVenta(reportModel, document)
 
                 document.close()
-
                 showDialogPdfView(context, file, nameUnique)
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()

@@ -26,14 +26,6 @@
             android:text="@string/str_btn_res_ven"/>
 
         <Button
-            android:id="@+id/btnCortesMensuales"
-            android:layout_width="360sp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/custom_btn"
-            android:layout_marginTop="15sp"
-            android:text="@string/str_btn_cort_mens"/>
-
-        <Button
             android:id="@+id/btnLogout"
             android:layout_width="360sp"
             android:layout_height="wrap_content"

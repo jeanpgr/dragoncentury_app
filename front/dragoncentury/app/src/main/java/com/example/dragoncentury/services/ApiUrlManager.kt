@@ -15,12 +15,13 @@ class ApiUrlManager {
         private const val URL_FILT_REPORT = "http://$SERVER_NAME/api/filtrarReportes.php"
         private const val URL_GENER_REPORT = "http://$SERVER_NAME/api/generarReporte.php"
         private const val URL_GET_ULT_REP = "http://$SERVER_NAME/api/getUltimateReports.php"
+        private const val URL_GET_SALES_SUMM = "http://$SERVER_NAME/api/getSalesSummary.php"
 
         fun getUrlLogin(): String {
             return URL_LOGIN
         }
 
-        fun getUrlGetCoches(): String {
+        fun getUrlCoches(): String {
             return URL_GET_COCHES
         }
 
@@ -36,8 +37,12 @@ class ApiUrlManager {
             return URL_GENER_REPORT
         }
 
-        fun getUrlGetUltRep(): String {
+        fun getUrlUltimosRep(): String {
             return URL_GET_ULT_REP
+        }
+
+        fun getUrlSalesSummary(): String {
+            return URL_GET_SALES_SUMM
         }
     }
 }

@@ -16,6 +16,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import com.example.dragoncentury.R
 
 private const val ARG_PARAM1 = "param1"
@@ -51,15 +52,30 @@ class HomeFragment : Fragment() {
             }
     }
 
+    private lateinit var btnResumenVen: Button
     private lateinit var btnLogout: Button
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        btnResumenVen = view.findViewById(R.id.btnResumenVenta)
         btnLogout = view.findViewById(R.id.btnLogout)
+
+        btnResumenVen.setOnClickListener {
+            openFragmentResumVent()
+        }
 
         btnLogout.setOnClickListener {
             showDialogConfirmar("¿Está seguro que desea cerrar sesión?",) {cerrarSesion()}
         }
+    }
+
+    private fun openFragmentResumVent() {
+        val fragResumVen = SalesSummaryFragment()
+        val fragManager: FragmentManager = requireActivity().supportFragmentManager
+        val transaction = fragManager.beginTransaction()
+        transaction.replace(R.id.frame_layout_main, fragResumVen)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     // Método para cerrar sesión
