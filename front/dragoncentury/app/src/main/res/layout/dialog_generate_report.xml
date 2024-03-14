@@ -40,6 +40,7 @@
                 android:layout_marginTop="20sp"
                 android:layout_marginStart="30sp"
                 android:text="@string/str_btn_generar"
+                android:textColor="@color/white"
                 android:background="@drawable/custom_btn"/>
         </LinearLayout>
 
@@ -289,6 +290,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/custom_btn"
             android:text="@string/str_btn_addgastos"
+            android:textColor="@color/white"
             android:layout_marginTop="15sp"
             android:layout_marginBottom="15sp"
             android:layout_marginStart="25sp">
